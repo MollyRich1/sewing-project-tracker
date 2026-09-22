@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Fabrics · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Fabrics</h1>
+  <a class="button" href="{{ url_for('fabrics.create_fabric') }}">Add fabric</a>
+</section>
+
+{% if fabrics %}
+  <ul class="card-list">
+    {% for fabric in fabrics %}
+      <li class="card">
+        {% if fabric.image_url %}
+          <img class="piece-image" src="{{ fabric.image_url }}" alt="{{ fabric.name }}">
+        {% endif %}
+        <h2>{{ fabric.name }}</h2>
+        <p>{{ fabric.yards_available }} yards available</p>
+        {% if fabric.description %}<p>{{ fabric.description }}</p>{% endif %}
+        {% if fabric.notes %}<p>{{ fabric.notes }}</p>{% endif %}
+        <p>
+          <a href="{{ url_for('fabrics.edit_fabric', fabric_id=fabric.id) }}">Edit</a>
+          ·
+          <a href="{{ url_for('fabrics.delete_fabric', fabric_id=fabric.id) }}">Delete</a>
+        </p>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty-state">No fabrics yet. <a href="{{ url_for('fabrics.create_fabric') }}">Add fabric</a> to build your stash.</p>
+{% endif %}
+{% endblock %}

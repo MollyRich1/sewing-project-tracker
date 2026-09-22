@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ fabric.name }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Delete fabric</h1>
+  <a href="{{ url_for('fabrics.list_fabrics') }}">Back to fabrics</a>
+</section>
+
+{% if usages %}
+  <p class="form-error">
+    This fabric cannot be deleted because it is used by one or more projects.
+    Reassign or delete those projects first.
+  </p>
+  <ul>
+    {% for project, role in usages %}
+      <li>{{ project.name }} — {{ role }} fabric</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Delete <strong>{{ fabric.name }}</strong>?</p>
+  <form method="post">
+    <button type="submit" class="button danger">Delete fabric</button>
+  </form>
+{% endif %}
+{% endblock %}

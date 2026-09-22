@@ -29,9 +29,11 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     from app.models import db
+    from app.routes.fabrics import bp as fabrics_bp
     from app.routes.patterns import bp as patterns_bp
 
     db.init_app(app)
+    app.register_blueprint(fabrics_bp)
     app.register_blueprint(patterns_bp)
 
     with app.app_context():

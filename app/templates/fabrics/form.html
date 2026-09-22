@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>{{ title }}</h1>
+  <a href="{{ url_for('fabrics.list_fabrics') }}">Back to fabrics</a>
+</section>
+
+{% if error %}<p class="form-error">{{ error }}</p>{% endif %}
+
+<form method="post" class="form-card">
+  <label>
+    Name
+    <input type="text" name="name" value="{{ form.name }}" required>
+  </label>
+  <label>
+    Yards available
+    <input type="number" name="yards_available" value="{{ form.yards_available }}" min="0" step="0.25" required>
+  </label>
+  <label>
+    Color or description
+    <textarea name="description" rows="3">{{ form.description }}</textarea>
+  </label>
+  <label>
+    Notes
+    <textarea name="notes" rows="3">{{ form.notes }}</textarea>
+  </label>
+  <label>
+    Image URL
+    <input type="url" name="image_url" value="{{ form.image_url }}">
+  </label>
+  <button type="submit" class="button">Save fabric</button>
+</form>
+{% endblock %}
