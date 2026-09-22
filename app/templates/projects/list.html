@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Projects · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Projects</h1>
+  <a class="button" href="{{ url_for('projects.create_project') }}">New project</a>
+</section>
+
+<nav class="tabs" aria-label="Project status">
+  {% for status in statuses %}
+    <a href="{{ url_for('projects.list_projects', status=status) }}"
+       {% if status == selected_status %}aria-current="page" class="active"{% endif %}>
+      {{ status }} ({{ counts[status] }})
+    </a>
+  {% endfor %}
+</nav>
+
+{% if projects %}
+  <ul class="card-list">
+    {% for project in projects %}
+      <li class="card">
+        <h2><a href="{{ url_for('projects.detail', project_id=project.id) }}">{{ project.name }}</a></h2>
+        <p>Pattern: {{ project.pattern.name }}</p>
+        <p>Outer: {{ project.outer_fabric.name }}</p>
+        {% if project.lining_fabric %}<p>Lining: {{ project.lining_fabric.name }}</p>{% endif %}
+        <p>Estimated time: {{ project.pattern.estimated_hours }} hours</p>
+        {% include "projects/_status_form.html" %}
+        <p>
+          <a href="{{ url_for('projects.edit_project', project_id=project.id) }}">Edit</a>
+          ·
+          <a href="{{ url_for('projects.delete_project', project_id=project.id) }}">Delete</a>
+        </p>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty-state">No {{ selected_status|lower }} projects.</p>
+{% endif %}
+{% endblock %}

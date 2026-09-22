@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ project.name }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Delete project</h1>
+  <a href="{{ url_for('projects.detail', project_id=project.id) }}">Back to {{ project.name }}</a>
+</section>
+
+<p>Delete <strong>{{ project.name }}</strong>? Its pattern and fabrics will remain in your library.</p>
+<form method="post">
+  <button type="submit" class="button danger">Delete project</button>
+</form>
+{% endblock %}

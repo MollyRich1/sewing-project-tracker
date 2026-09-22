@@ -1,0 +1,11 @@
+<form method="post" action="{{ url_for('projects.change_status', project_id=project.id) }}" class="status-form">
+  <label>
+    <span class="visually-hidden">Status for {{ project.name }}</span>
+    <select name="status" onchange="this.form.submit()">
+      {% for status in statuses %}
+        <option value="{{ status }}" {% if status == project.status %}selected{% endif %}>{{ status }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <noscript><button type="submit">Update status</button></noscript>
+</form>
