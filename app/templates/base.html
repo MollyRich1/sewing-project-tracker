@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Sewing Project Tracker{% endblock %}</title>
+  <title>{% block title %}Stitchbook{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <header class="site-header">
-    <p class="site-title"><a href="{{ url_for('patterns.list_patterns') }}">Sewing Tracker</a></p>
+    <p class="site-title"><a href="{{ url_for('dashboard.index') }}">Stitchbook</a></p>
     <nav class="site-nav">
+      <a href="{{ url_for('dashboard.index') }}">Dashboard</a>
       <a href="{{ url_for('projects.list_projects') }}">Projects</a>
       <a href="{{ url_for('patterns.list_patterns') }}">Patterns</a>
       <a href="{{ url_for('fabrics.list_fabrics') }}">Fabrics</a>

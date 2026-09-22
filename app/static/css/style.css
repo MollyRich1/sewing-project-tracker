@@ -1,46 +1,380 @@
-/* Layout and visual design are expanded in a later phase. */
+:root {
+  --ink: #292925;
+  --muted: #696861;
+  --paper: #faf8f3;
+  --card: #ffffff;
+  --line: #ddd9cf;
+  --sage: #48645a;
+  --sage-dark: #354c44;
+  --sage-soft: #e6ede9;
+  --rose: #925d58;
+  --error: #8b2e2e;
+  --shadow: 0 10px 28px rgba(43, 42, 36, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Georgia, "Times New Roman", serif;
   margin: 0;
-  color: #2c2a28;
-  background: #f7f4ef;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.55;
 }
 
-.site-header,
-.site-main {
-  max-width: 56rem;
+a {
+  color: var(--sage-dark);
+  text-underline-offset: 0.2em;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+.site-title {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.15;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 70rem;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--line);
 }
 
+.site-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.site-title a,
 .site-nav a {
-  margin-right: 1rem;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.site-nav a:hover {
+  text-decoration: underline;
+}
+
+.site-main {
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+.page-header,
+.section-heading,
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  margin-bottom: 0;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.hero {
+  margin-bottom: 2.5rem;
+  padding: 2.5rem;
+  color: #fff;
+  background: var(--sage);
+  border-radius: 1rem;
+}
+
+.hero h1 {
+  max-width: 16ch;
+  margin-bottom: 0.75rem;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+}
+
+.hero p:last-child {
+  max-width: 35rem;
+  margin-bottom: 0;
+  color: #e5ece8;
+}
+
+.eyebrow {
+  margin-bottom: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero .button {
+  flex: 0 0 auto;
+  color: var(--sage-dark);
+  background: #fff;
+}
+
+.card-list,
+.card-grid {
+  padding: 0;
+  list-style: none;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
 }
 
 .card {
-  background: #fff;
-  border-radius: 0.5rem;
-  padding: 1rem 1.25rem;
   margin-bottom: 1rem;
+  padding: 1.35rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  box-shadow: var(--shadow);
+}
+
+.card-grid .card {
+  margin-bottom: 0;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 13rem;
+}
+
+.project-card h3 {
+  margin: 0.55rem 0;
+  font-size: 1.4rem;
+}
+
+.project-card p {
+  margin-bottom: 0.4rem;
+  color: var(--muted);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  color: var(--sage-dark);
+  background: var(--sage-soft);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.dashboard-section,
+.section,
+.yardage-comparison {
+  margin-top: 2.5rem;
+}
+
+.section-heading h2 span {
+  color: var(--muted);
+  font-family: Inter, ui-sans-serif, sans-serif;
+  font-size: 0.9rem;
+}
+
+.form-card,
+.yardage-comparison,
+.empty-state,
+.detail-list {
+  max-width: 44rem;
+  padding: 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
 }
 
 .form-card label {
   display: block;
   margin-bottom: 1rem;
+  font-weight: 650;
 }
 
 .form-card input,
-.form-card textarea {
-  display: block;
+.form-card textarea,
+.form-card select,
+.status-form select {
   width: 100%;
-  box-sizing: border-box;
-  margin-top: 0.25rem;
+  margin-top: 0.35rem;
+  padding: 0.7rem 0.8rem;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #bbb8ae;
+  border-radius: 0.4rem;
+  font: inherit;
 }
 
-.form-error {
-  color: #8b2e2e;
+.form-card input:focus,
+.form-card textarea:focus,
+.form-card select:focus,
+.status-form select:focus {
+  outline: 3px solid var(--sage-soft);
+  border-color: var(--sage);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hint {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+
+.form-error,
+.notice {
+  color: var(--error);
+}
+
+.flash {
+  padding: 0.8rem 1rem;
+  background: var(--sage-soft);
+  border-radius: 0.5rem;
 }
 
 .button {
   display: inline-block;
+  padding: 0.65rem 1rem;
+  color: #fff;
+  background: var(--sage);
+  border: 1px solid var(--sage);
+  border-radius: 0.45rem;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--sage-dark);
+}
+
+.button.secondary {
+  color: var(--sage-dark);
+  background: transparent;
+}
+
+.button.danger {
+  background: var(--rose);
+  border-color: var(--rose);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs a {
+  padding: 0.65rem 0.9rem;
+  text-decoration: none;
+}
+
+.tabs a.active {
+  margin-bottom: -1px;
+  font-weight: 700;
+  border-bottom: 3px solid var(--sage);
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) 2fr;
+  gap: 0.75rem 1.5rem;
+}
+
+.detail-list dt {
+  font-weight: 700;
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+.detail-image,
+.piece-image {
+  max-width: 100%;
+  max-height: 22rem;
+  object-fit: cover;
+  border-radius: 0.6rem;
+}
+
+.piece-image {
+  max-height: 12rem;
+}
+
+.status-form {
+  margin-top: 1rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 42rem) {
+  .site-header,
+  .page-header,
+  .hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-header,
+  .site-main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .site-nav {
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
+
+  .hero {
+    padding: 1.5rem;
+  }
+
+  .detail-list {
+    display: block;
+  }
+
+  .detail-list dd {
+    margin-bottom: 1rem;
+  }
 }
