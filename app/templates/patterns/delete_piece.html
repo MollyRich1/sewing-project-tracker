@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ piece.piece_name }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Delete piece</h1>
+  <a href="{{ url_for('patterns.detail', pattern_id=pattern.id) }}">Back to {{ pattern.name }}</a>
+</section>
+
+<p>Delete <strong>{{ piece.piece_name }}</strong> from {{ pattern.name }}?</p>
+<form method="post">
+  <button type="submit" class="button danger">Delete piece</button>
+</form>
+{% endblock %}

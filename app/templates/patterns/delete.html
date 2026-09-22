@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ pattern.name }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Delete pattern</h1>
+  <a href="{{ url_for('patterns.detail', pattern_id=pattern.id) }}">Back to {{ pattern.name }}</a>
+</section>
+
+{% if blocking_projects %}
+  <p class="form-error">
+    This pattern cannot be deleted because it is used by one or more projects.
+    Reassign or delete those projects first.
+  </p>
+  <ul>
+    {% for project in blocking_projects %}
+      <li>{{ project.name }} ({{ project.status }})</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Delete <strong>{{ pattern.name }}</strong>? This will also delete all of its pattern pieces.</p>
+  <form method="post">
+    <button type="submit" class="button danger">Delete pattern</button>
+  </form>
+{% endif %}
+{% endblock %}

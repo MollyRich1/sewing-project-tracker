@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Patterns · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Patterns</h1>
+  <a class="button" href="{{ url_for('patterns.create_pattern') }}">Add pattern</a>
+</section>
+
+{% if patterns %}
+  <ul class="card-list">
+    {% for pattern in patterns %}
+      <li class="card">
+        <h2><a href="{{ url_for('patterns.detail', pattern_id=pattern.id) }}">{{ pattern.name }}</a></h2>
+        <p>{{ pattern.estimated_hours }} hours</p>
+        <p>Outer fabric: {{ pattern.outer_yards_required }} yards</p>
+        {% if pattern.lining_yards_required is not none %}
+          <p>Lining fabric: {{ pattern.lining_yards_required }} yards</p>
+        {% else %}
+          <p>Does not require lining</p>
+        {% endif %}
+        {% if pattern.notes %}
+          <p>{{ pattern.notes }}</p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty-state">No patterns yet. <a href="{{ url_for('patterns.create_pattern') }}">Add a pattern</a> to get started.</p>
+{% endif %}
+{% endblock %}

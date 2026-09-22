@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ pattern.name }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>{{ pattern.name }}</h1>
+  <p>
+    <a class="button secondary" href="{{ url_for('patterns.edit_pattern', pattern_id=pattern.id) }}">Edit</a>
+    <a class="button secondary" href="{{ url_for('patterns.delete_pattern', pattern_id=pattern.id) }}">Delete</a>
+    <a href="{{ url_for('patterns.list_patterns') }}">Back to patterns</a>
+  </p>
+</section>
+
+{% if pattern.image_url %}
+  <p><img class="detail-image" src="{{ pattern.image_url }}" alt="{{ pattern.name }}"></p>
+{% endif %}
+
+<dl class="detail-list">
+  <dt>Estimated time</dt>
+  <dd>{{ pattern.estimated_hours }} hours</dd>
+  <dt>Outer fabric required</dt>
+  <dd>{{ pattern.outer_yards_required }} yards</dd>
+  <dt>Lining fabric required</dt>
+  <dd>
+    {% if pattern_requires_lining %}
+      {{ pattern.lining_yards_required }} yards
+    {% else %}
+      This pattern does not require lining
+    {% endif %}
+  </dd>
+  {% if pattern.notions %}
+    <dt>Notions</dt>
+    <dd>{{ pattern.notions }}</dd>
+  {% endif %}
+  {% if pattern.notes %}
+    <dt>Notes</dt>
+    <dd>{{ pattern.notes }}</dd>
+  {% endif %}
+</dl>
+
+<section class="section">
+  <h2>Pattern pieces</h2>
+  {% if pattern.pieces %}
+    <ul class="card-list">
+      {% for piece in pattern.pieces %}
+        <li class="card">
+          <h3>{{ piece.piece_name }}</h3>
+          <p>Cut {{ piece.quantity_to_cut }}</p>
+          {% if piece.measurements %}<p>Measurements: {{ piece.measurements }}</p>{% endif %}
+          {% if piece.fabric_type %}<p>Fabric type: {{ piece.fabric_type }}</p>{% endif %}
+          {% if piece.notes %}<p>{{ piece.notes }}</p>{% endif %}
+          {% if piece.image_url %}
+            <p><img class="piece-image" src="{{ piece.image_url }}" alt="{{ piece.piece_name }}"></p>
+          {% endif %}
+          <p>
+            <a href="{{ url_for('patterns.edit_piece', pattern_id=pattern.id, piece_id=piece.id) }}">Edit</a>
+            ·
+            <a href="{{ url_for('patterns.delete_piece', pattern_id=pattern.id, piece_id=piece.id) }}">Delete</a>
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty-state">No pieces yet. Add the pieces you need to cut.</p>
+  {% endif %}
+</section>
+
+<section class="section">
+  <h2>Add a piece</h2>
+  {% if piece_error %}
+    <p class="form-error">{{ piece_error }}</p>
+  {% endif %}
+  <form method="post" action="{{ url_for('patterns.add_piece', pattern_id=pattern.id) }}" class="form-card">
+    <label>
+      Piece name
+      <input type="text" name="piece_name" value="{{ piece_form.piece_name }}" required>
+    </label>
+    <label>
+      Quantity to cut
+      <input type="number" name="quantity_to_cut" value="{{ piece_form.quantity_to_cut }}" min="1" step="1" required>
+    </label>
+    <label>
+      Measurements
+      <input type="text" name="measurements" value="{{ piece_form.measurements }}">
+    </label>
+    <label>
+      Fabric type
+      <input type="text" name="fabric_type" value="{{ piece_form.fabric_type }}" placeholder="Outer, Lining, Interfacing">
+    </label>
+    <label>
+      Notes
+      <textarea name="notes" rows="2">{{ piece_form.notes }}</textarea>
+    </label>
+    <label>
+      Image URL
+      <input type="url" name="image_url" value="{{ piece_form.image_url }}">
+    </label>
+    <button type="submit" class="button">Add piece</button>
+  </form>
+</section>
+{% endblock %}

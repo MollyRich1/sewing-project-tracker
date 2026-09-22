@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Sewing Project Tracker{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <p class="site-title"><a href="{{ url_for('patterns.list_patterns') }}">Sewing Tracker</a></p>
+    <nav class="site-nav">
+      <a href="{{ url_for('patterns.list_patterns') }}">Patterns</a>
+    </nav>
+  </header>
+  <main class="site-main">
+    {% for message in get_flashed_messages() %}
+      <p class="flash">{{ message }}</p>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

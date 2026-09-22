@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ piece.piece_name }} · Sewing Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <h1>Edit piece</h1>
+  <a href="{{ url_for('patterns.detail', pattern_id=pattern.id) }}">Back to {{ pattern.name }}</a>
+</section>
+
+{% if error %}
+  <p class="form-error">{{ error }}</p>
+{% endif %}
+
+<form method="post" class="form-card">
+  <label>
+    Piece name
+    <input type="text" name="piece_name" value="{{ form.piece_name }}" required>
+  </label>
+  <label>
+    Quantity to cut
+    <input type="number" name="quantity_to_cut" value="{{ form.quantity_to_cut }}" min="1" step="1" required>
+  </label>
+  <label>
+    Measurements
+    <input type="text" name="measurements" value="{{ form.measurements }}">
+  </label>
+  <label>
+    Fabric type
+    <input type="text" name="fabric_type" value="{{ form.fabric_type }}" placeholder="Outer, Lining, Interfacing">
+  </label>
+  <label>
+    Notes
+    <textarea name="notes" rows="2">{{ form.notes }}</textarea>
+  </label>
+  <label>
+    Image URL
+    <input type="url" name="image_url" value="{{ form.image_url }}">
+  </label>
+  <button type="submit" class="button">Save piece</button>
+</form>
+{% endblock %}

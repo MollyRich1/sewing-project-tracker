@@ -23,3 +23,8 @@ def app(tmp_path):
 def app_context(app):
     with app.app_context():
         yield
+
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
