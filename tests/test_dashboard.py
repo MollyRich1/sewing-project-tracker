@@ -9,12 +9,12 @@ from tests.factories import make_fabric, make_pattern, make_project
 def test_dashboard_empty_state_links_to_pattern_and_fabric_setup(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert b"Set up your workspace" in response.data
+    assert b"Set up your sewing table" in response.data
     assert b"Add a pattern" in response.data
     assert b"Add fabric" in response.data
-    assert b"Nothing is in progress" in response.data
-    assert b"No projects are waiting" in response.data
-    assert b"Completed projects will collect here" in response.data
+    assert b"No project is in progress" in response.data
+    assert b"Your projects will gather here" in response.data
+    assert b"0 yd total" in response.data
 
 
 def test_dashboard_shows_all_status_groups(client):
@@ -31,7 +31,10 @@ def test_dashboard_shows_all_status_groups(client):
     assert b"Planned Tote" in response.data
     assert b"Current Tote" in response.data
     assert b"Finished Tote" in response.data
-    assert b"New project" in response.data
+    assert b"In Progress" in response.data
+    assert b"Planned" in response.data
+    assert b"Completed" in response.data
+    assert b"+ New Project" in response.data
 
 
 def test_dashboard_includes_quick_status_controls(client):
@@ -53,3 +56,37 @@ def test_navigation_links_all_main_pages(client):
     assert b">Projects</a>" in response.data
     assert b">Patterns</a>" in response.data
     assert b">Fabrics</a>" in response.data
+    assert b"+ New Project</a>" in response.data
+
+
+def test_dashboard_uses_real_fabric_and_pattern_data(client):
+    first_pattern = make_pattern(name="First Pattern")
+    make_pattern(name="Second Pattern", lining_yards_required=None)
+    first_fabric = make_fabric(name="Canvas", yards_available=2.5)
+    make_fabric(name="Cotton", yards_available=1.25)
+    make_project(first_pattern, first_fabric, name="Current Make")
+
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"2 fabrics" in response.data
+    assert b"3.75 yd total" in response.data
+    assert b"Canvas" in response.data
+    assert b"Cotton" in response.data
+    assert b"First Pattern" in response.data
+    assert b"Second Pattern" in response.data
+
+
+def test_dashboard_limits_compact_project_grid_to_three(client):
+    pattern = make_pattern()
+    fabric = make_fabric()
+    for index in range(4):
+        make_project(
+            pattern,
+            fabric,
+            name=f"Project {index}",
+            status=STATUS_PLANNED,
+        )
+
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.data.count(b'class="mini-project"') == 3

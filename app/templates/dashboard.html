@@ -1,75 +1,235 @@
 {% extends "base.html" %}
 
-{% macro project_card(project) %}
-  <li class="card project-card">
-    <div>
-      <span class="status-badge">{{ project.status }}</span>
-      <h3><a href="{{ url_for('projects.detail', project_id=project.id) }}">{{ project.name }}</a></h3>
-      <p>{{ project.pattern.name }} · {{ project.pattern.estimated_hours }} hours</p>
-      <p>Outer: {{ project.outer_fabric.name }}{% if project.lining_fabric %} · Lining: {{ project.lining_fabric.name }}{% endif %}</p>
+{% macro fabric_swatch(fabric, accent="sage") %}
+  {% if fabric.image_url %}
+    <img class="swatch-image" src="{{ fabric.image_url }}" alt="{{ fabric.name }}">
+  {% else %}
+    <span class="fabric-swatch fabric-swatch--{{ accent }}" aria-hidden="true">{{ fabric.name[0] }}</span>
+  {% endif %}
+{% endmacro %}
+
+{% macro compact_project(project) %}
+  <li class="mini-project">
+    <div class="mini-project__visual">
+      {% if project.pattern.image_url %}
+        <img src="{{ project.pattern.image_url }}" alt="">
+      {% else %}
+        {{ fabric_swatch(project.outer_fabric, "sage") }}
+      {% endif %}
     </div>
-    {% include "projects/_status_form.html" %}
+    <div class="mini-project__body">
+      <span class="status-label status-label--{{ project.status|lower|replace(' ', '-') }}">{{ project.status }}</span>
+      <h3><a href="{{ url_for('projects.detail', project_id=project.id) }}">{{ project.name }}</a></h3>
+      <p>{{ project.pattern.name }}</p>
+      <span class="mini-project__fabric">{{ project.outer_fabric.name }}</span>
+      <div class="compact-status mini-status">
+        {% include "projects/_status_form.html" %}
+      </div>
+    </div>
   </li>
 {% endmacro %}
 
 {% block title %}Dashboard · Stitchbook{% endblock %}
 
 {% block content %}
-<section class="hero">
+<header class="dashboard-intro">
   <div>
-    <p class="eyebrow">Your sewing workspace</p>
-    <h1>Make space for what you want to sew.</h1>
-    <p>Keep patterns, fabrics, and project plans together in one calm place.</p>
+    <p class="eyebrow">Your sewing table</p>
+    <h1>Here’s what’s taking shape.</h1>
   </div>
-  {% if has_patterns and has_fabrics %}
-    <a class="button" href="{{ url_for('projects.create_project') }}">New project</a>
-  {% endif %}
-</section>
+  <p>Patterns, fabrics, and current makes—gathered in one place.</p>
+</header>
 
 {% if not has_patterns or not has_fabrics %}
-  <section class="empty-state setup-card">
-    <h2>Set up your workspace</h2>
-    <p>Add at least one pattern and fabric before creating a project.</p>
-    <p>
-      {% if not has_patterns %}<a class="button secondary" href="{{ url_for('patterns.create_pattern') }}">Add a pattern</a>{% endif %}
-      {% if not has_fabrics %}<a class="button secondary" href="{{ url_for('fabrics.create_fabric') }}">Add fabric</a>{% endif %}
-    </p>
+  <section class="setup-notice">
+    <div>
+      <strong>Set up your sewing table</strong>
+      <span>A project needs at least one pattern and one fabric.</span>
+    </div>
+    <div class="setup-notice__actions">
+      {% if not has_patterns %}<a href="{{ url_for('patterns.create_pattern') }}">Add a pattern →</a>{% endif %}
+      {% if not has_fabrics %}<a href="{{ url_for('fabrics.create_fabric') }}">Add fabric →</a>{% endif %}
+    </div>
   </section>
 {% endif %}
 
-<section class="dashboard-section">
-  <div class="section-heading">
-    <h2>In Progress <span>{{ in_progress_projects|length }}</span></h2>
-    <a href="{{ url_for('projects.list_projects', status='In Progress') }}">View projects</a>
-  </div>
-  {% if in_progress_projects %}
-    <ul class="card-grid">{% for project in in_progress_projects %}{{ project_card(project) }}{% endfor %}</ul>
-  {% else %}
-    <p class="empty-state">Nothing is in progress right now.</p>
-  {% endif %}
-</section>
+<div class="bento-grid">
+  <section class="dashboard-card continue-card">
+    <div class="card-heading">
+      <div>
+        <p class="card-kicker">Continue sewing</p>
+        <h2>On your table now</h2>
+      </div>
+      {% if continue_project %}
+        <span class="status-label status-label--in-progress">{{ continue_project.status }}</span>
+      {% endif %}
+    </div>
 
-<section class="dashboard-section">
-  <div class="section-heading">
-    <h2>Planned <span>{{ planned_projects|length }}</span></h2>
-    <a href="{{ url_for('projects.list_projects', status='Planned') }}">View projects</a>
-  </div>
-  {% if planned_projects %}
-    <ul class="card-grid">{% for project in planned_projects %}{{ project_card(project) }}{% endfor %}</ul>
-  {% else %}
-    <p class="empty-state">No projects are waiting in your plan.</p>
-  {% endif %}
-</section>
+    {% if continue_project %}
+      <div class="continue-layout">
+        <div class="project-visual">
+          {% if continue_project.pattern.image_url %}
+            <img src="{{ continue_project.pattern.image_url }}" alt="{{ continue_project.pattern.name }}">
+          {% else %}
+            <div class="project-visual__placeholder">
+              <span class="project-visual__mark">{{ continue_project.pattern.name[0] }}</span>
+              <span>{{ continue_project.pattern.name }}</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="continue-details">
+          <p class="project-pattern">{{ continue_project.pattern.name }}</p>
+          <h3>{{ continue_project.name }}</h3>
+          <p class="project-time">{{ continue_project.pattern.estimated_hours }} hours estimated</p>
 
-<section class="dashboard-section">
-  <div class="section-heading">
-    <h2>Completed <span>{{ completed_projects|length }}</span></h2>
-    <a href="{{ url_for('projects.list_projects', status='Completed') }}">View projects</a>
-  </div>
-  {% if completed_projects %}
-    <ul class="card-grid">{% for project in completed_projects %}{{ project_card(project) }}{% endfor %}</ul>
-  {% else %}
-    <p class="empty-state">Completed projects will collect here.</p>
-  {% endif %}
-</section>
+          <div class="fabric-pair">
+            <div class="fabric-row">
+              {{ fabric_swatch(continue_project.outer_fabric, "sage") }}
+              <span><small>Outer</small>{{ continue_project.outer_fabric.name }}</span>
+            </div>
+            {% if continue_project.lining_fabric %}
+              <div class="fabric-row">
+                {{ fabric_swatch(continue_project.lining_fabric, "blush") }}
+                <span><small>Lining</small>{{ continue_project.lining_fabric.name }}</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="continue-actions">
+            <a class="text-action" href="{{ url_for('projects.detail', project_id=continue_project.id) }}">View project →</a>
+            <div class="compact-status">
+              {% with project=continue_project %}
+                {% include "projects/_status_form.html" %}
+              {% endwith %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="dashboard-empty">
+        <p>No project is in progress.</p>
+        {% if has_patterns and has_fabrics %}
+          <a class="text-action" href="{{ url_for('projects.create_project') }}">Plan something new →</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="dashboard-card overview-card">
+    <div class="card-heading">
+      <div>
+        <p class="card-kicker">Project overview</p>
+        <h2>Your pipeline</h2>
+      </div>
+    </div>
+    <div class="pipeline-list">
+      <a href="{{ url_for('projects.list_projects', status='In Progress') }}">
+        <span class="pipeline-dot pipeline-dot--primary"></span>
+        <span>In Progress</span>
+        <strong>{{ project_counts['In Progress'] }}</strong>
+      </a>
+      <a href="{{ url_for('projects.list_projects', status='Planned') }}">
+        <span class="pipeline-dot pipeline-dot--gold"></span>
+        <span>Planned</span>
+        <strong>{{ project_counts['Planned'] }}</strong>
+      </a>
+      <a href="{{ url_for('projects.list_projects', status='Completed') }}">
+        <span class="pipeline-dot pipeline-dot--blush"></span>
+        <span>Completed</span>
+        <strong>{{ project_counts['Completed'] }}</strong>
+      </a>
+    </div>
+    <a class="text-action card-footer-link" href="{{ url_for('projects.list_projects') }}">View all projects →</a>
+  </section>
+
+  <section class="dashboard-card stash-card">
+    <div class="card-heading">
+      <div>
+        <p class="card-kicker">Fabric stash</p>
+        <h2>{{ fabric_count }} fabric{% if fabric_count != 1 %}s{% endif %}</h2>
+      </div>
+      <span class="yardage-total">{{ "%g"|format(total_fabric_yards) }} yd total</span>
+    </div>
+
+    {% if recent_fabrics %}
+      <ul class="swatch-list">
+        {% for fabric in recent_fabrics %}
+          <li title="{{ fabric.name }}">
+            {{ fabric_swatch(fabric, ["sage", "blush", "gold", "deep"][loop.index0]) }}
+            <span>{{ fabric.name }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="dashboard-empty">Your fabric shelf is empty.</p>
+    {% endif %}
+    <a class="text-action card-footer-link" href="{{ url_for('fabrics.list_fabrics') }}">View fabrics →</a>
+  </section>
+
+  <section class="dashboard-card patterns-card">
+    <div class="card-heading">
+      <div>
+        <p class="card-kicker">Recent patterns</p>
+        <h2>Ready to make</h2>
+      </div>
+    </div>
+
+    {% if recent_patterns %}
+      <ul class="pattern-list">
+        {% for pattern in recent_patterns %}
+          <li>
+            <a href="{{ url_for('patterns.detail', pattern_id=pattern.id) }}">
+              {% if pattern.image_url %}
+                <img src="{{ pattern.image_url }}" alt="">
+              {% else %}
+                <span class="pattern-thumb" aria-hidden="true">{{ pattern.name[0] }}</span>
+              {% endif %}
+              <span class="pattern-list__copy">
+                <strong>{{ pattern.name }}</strong>
+                <small>{{ pattern.estimated_hours }} hr · {{ pattern.outer_yards_required }} yd outer</small>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="dashboard-empty">No patterns have been added yet.</p>
+    {% endif %}
+    <a class="text-action card-footer-link" href="{{ url_for('patterns.list_patterns') }}">View patterns →</a>
+  </section>
+
+  <section class="dashboard-card quick-card">
+    <div class="card-heading">
+      <div>
+        <p class="card-kicker">Quick add</p>
+        <h2>Start here</h2>
+      </div>
+    </div>
+    <nav class="quick-links" aria-label="Quick add">
+      <a href="{{ url_for('projects.create_project') }}"><span>+</span> New Project</a>
+      <a href="{{ url_for('patterns.create_pattern') }}"><span>+</span> Add Pattern</a>
+      <a href="{{ url_for('fabrics.create_fabric') }}"><span>+</span> Add Fabric</a>
+    </nav>
+  </section>
+
+  <section class="dashboard-card projects-card">
+    <div class="card-heading">
+      <div>
+        <p class="card-kicker">Your projects</p>
+        <h2>Across the worktable</h2>
+      </div>
+      <a class="text-action" href="{{ url_for('projects.list_projects') }}">View all projects →</a>
+    </div>
+    {% if recent_projects %}
+      <ul class="mini-project-grid">
+        {% for project in recent_projects %}
+          {{ compact_project(project) }}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="dashboard-empty">Your projects will gather here.</p>
+    {% endif %}
+  </section>
+</div>
 {% endblock %}

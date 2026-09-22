@@ -38,7 +38,7 @@ creates its tables when it starts, so `init-db` is safe to run more than once.
 ## Run the application
 
 ```bash
-flask --app run --debug
+flask --app run run --debug
 ```
 
 Open <http://127.0.0.1:5000> in a browser.
