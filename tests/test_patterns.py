@@ -196,6 +196,7 @@ def test_cannot_delete_pattern_used_by_project(client):
     assert response.status_code == 409
     assert b"cannot be deleted" in response.data
     assert b"Birthday tote" in response.data
+    assert f"/projects/{project.id}/edit".encode() in response.data
     assert db.session.get(Pattern, pattern.id) is not None
     assert PatternPiece.query.filter_by(pattern_id=pattern.id).count() == 1
     assert project.id is not None

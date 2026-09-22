@@ -248,7 +248,7 @@ def change_status(project_id):
     project.status = status
     db.session.commit()
     flash("Project status updated.")
-    return redirect(request.referrer or url_for("projects.list_projects", status=status))
+    return redirect(url_for("projects.list_projects", status=status))
 
 
 @bp.route("/<int:project_id>/delete", methods=["GET", "POST"])

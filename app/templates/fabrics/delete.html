@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Delete {{ fabric.name }} · Sewing Tracker{% endblock %}
+{% block title %}Delete {{ fabric.name }} · Stitchbook{% endblock %}
 
 {% block content %}
 <section class="page-header">
@@ -15,7 +15,10 @@
   </p>
   <ul>
     {% for project, role in usages %}
-      <li>{{ project.name }} — {{ role }} fabric</li>
+      <li>
+        <a href="{{ url_for('projects.edit_project', project_id=project.id) }}">{{ project.name }}</a>
+        — {{ role }} fabric
+      </li>
     {% endfor %}
   </ul>
 {% else %}

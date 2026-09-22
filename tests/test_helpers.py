@@ -31,6 +31,12 @@ def test_parse_non_negative_float_rejects_negative():
         parse_non_negative_float("-1", "Estimated hours")
 
 
+@pytest.mark.parametrize("value", ["nan", "inf", "-inf"])
+def test_parse_non_negative_float_rejects_non_finite_values(value):
+    with pytest.raises(ValueError, match="finite number"):
+        parse_non_negative_float(value, "Estimated hours")
+
+
 def test_parse_quantity_to_cut_requires_at_least_one():
     with pytest.raises(ValueError, match="at least 1"):
         parse_quantity_to_cut("0")

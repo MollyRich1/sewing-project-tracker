@@ -81,13 +81,14 @@ def test_delete_unused_fabric(client):
 def test_delete_blocked_when_fabric_is_outer(client):
     pattern = make_pattern()
     fabric = make_fabric(name="Outer Canvas")
-    make_project(pattern, fabric, name="Market Tote")
+    project = make_project(pattern, fabric, name="Market Tote")
 
     response = client.post(f"/fabrics/{fabric.id}/delete")
     assert response.status_code == 409
     assert b"cannot be deleted" in response.data
     assert b"Market Tote" in response.data
     assert b"Outer fabric" in response.data
+    assert f"/projects/{project.id}/edit".encode() in response.data
     assert db.session.get(Fabric, fabric.id) is not None
 
 

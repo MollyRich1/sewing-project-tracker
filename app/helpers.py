@@ -1,3 +1,6 @@
+import math
+
+
 def get_projects_blocking_pattern_delete(pattern):
     """Return projects that currently use this pattern."""
     return list(pattern.projects)
@@ -40,6 +43,8 @@ def parse_non_negative_float(raw, field_label, required=True):
         number = float(text)
     except ValueError:
         raise ValueError(f"{field_label} must be a number.")
+    if not math.isfinite(number):
+        raise ValueError(f"{field_label} must be a finite number.")
     if number < 0:
         raise ValueError(f"{field_label} cannot be negative.")
     return number

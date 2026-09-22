@@ -249,6 +249,20 @@ def test_quick_status_change_accepts_allowed_status(client):
     assert db.session.get(Project, project.id).status == STATUS_COMPLETED
 
 
+def test_quick_status_change_uses_safe_internal_redirect(client):
+    pattern = make_pattern()
+    fabric = make_fabric()
+    project = make_project(pattern, fabric, status=STATUS_PLANNED)
+
+    response = client.post(
+        f"/projects/{project.id}/status",
+        data={"status": STATUS_IN_PROGRESS},
+        headers={"Referer": "https://example.com/untrusted"},
+    )
+    assert response.status_code == 302
+    assert response.location.endswith("/projects/?status=In+Progress")
+
+
 def test_quick_status_change_rejects_arbitrary_status(client):
     pattern = make_pattern()
     fabric = make_fabric()
