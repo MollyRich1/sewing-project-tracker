@@ -49,4 +49,8 @@ def create_app(test_config=None):
         db.create_all()
         print("Initialized the database.")
 
+    from seed import register_seed_commands
+
+    register_seed_commands(app)
+
     return app
