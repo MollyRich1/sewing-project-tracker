@@ -14,7 +14,7 @@ def test_dashboard_empty_state_links_to_pattern_and_fabric_setup(client):
     assert b"Add fabric" in response.data
     assert b"No project is in progress" in response.data
     assert b"Your projects will gather here" in response.data
-    assert b"0 yd total" in response.data
+    assert b"0 yd" in response.data
 
 
 def test_dashboard_shows_all_status_groups(client):
@@ -68,8 +68,9 @@ def test_dashboard_uses_real_fabric_and_pattern_data(client):
 
     response = client.get("/")
     assert response.status_code == 200
-    assert b"2 fabrics" in response.data
-    assert b"3.75 yd total" in response.data
+    assert b">2</strong>" in response.data
+    assert b"fabrics" in response.data
+    assert b"3.75 yd" in response.data
     assert b"Canvas" in response.data
     assert b"Cotton" in response.data
     assert b"First Pattern" in response.data

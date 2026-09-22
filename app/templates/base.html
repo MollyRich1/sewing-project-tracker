@@ -14,8 +14,8 @@
       <a href="{{ url_for('projects.list_projects') }}" {% if request.blueprint == 'projects' %}aria-current="page"{% endif %}>Projects</a>
       <a href="{{ url_for('patterns.list_patterns') }}" {% if request.blueprint == 'patterns' %}aria-current="page"{% endif %}>Patterns</a>
       <a href="{{ url_for('fabrics.list_fabrics') }}" {% if request.blueprint == 'fabrics' %}aria-current="page"{% endif %}>Fabrics</a>
-      <a class="button nav-action" href="{{ url_for('projects.create_project') }}">+ New Project</a>
     </nav>
+    <a class="button nav-action" href="{{ url_for('projects.create_project') }}">+ New Project</a>
   </header>
   <main class="site-main">
     {% for message in get_flashed_messages() %}

@@ -4,7 +4,9 @@
   {% if fabric.image_url %}
     <img class="swatch-image" src="{{ fabric.image_url }}" alt="{{ fabric.name }}">
   {% else %}
-    <span class="fabric-swatch fabric-swatch--{{ accent }}" aria-hidden="true">{{ fabric.name[0] }}</span>
+    <span class="fabric-swatch fabric-swatch--{{ accent }}">
+      <span class="visually-hidden">{{ fabric.name }} swatch</span>
+    </span>
   {% endif %}
 {% endmacro %}
 
@@ -13,8 +15,10 @@
     <div class="mini-project__visual">
       {% if project.pattern.image_url %}
         <img src="{{ project.pattern.image_url }}" alt="">
+      {% elif project.outer_fabric.image_url %}
+        <img src="{{ project.outer_fabric.image_url }}" alt="">
       {% else %}
-        {{ fabric_swatch(project.outer_fabric, "sage") }}
+        <span class="mini-fabric-preview" aria-hidden="true"></span>
       {% endif %}
     </div>
     <div class="mini-project__body">
@@ -36,8 +40,8 @@
   <div>
     <p class="eyebrow">Your sewing table</p>
     <h1>Here’s what’s taking shape.</h1>
+    <p class="dashboard-intro__description">Patterns, fabrics, and current makes—all in one place.</p>
   </div>
-  <p>Patterns, fabrics, and current makes—gathered in one place.</p>
 </header>
 
 {% if not has_patterns or not has_fabrics %}
@@ -58,7 +62,7 @@
     <div class="card-heading">
       <div>
         <p class="card-kicker">Continue sewing</p>
-        <h2>On your table now</h2>
+        <h2>Current project</h2>
       </div>
       {% if continue_project %}
         <span class="status-label status-label--in-progress">{{ continue_project.status }}</span>
@@ -70,10 +74,20 @@
         <div class="project-visual">
           {% if continue_project.pattern.image_url %}
             <img src="{{ continue_project.pattern.image_url }}" alt="{{ continue_project.pattern.name }}">
+          {% elif continue_project.outer_fabric.image_url %}
+            <img src="{{ continue_project.outer_fabric.image_url }}" alt="{{ continue_project.outer_fabric.name }}">
           {% else %}
-            <div class="project-visual__placeholder">
-              <span class="project-visual__mark">{{ continue_project.pattern.name[0] }}</span>
-              <span>{{ continue_project.pattern.name }}</span>
+            <div class="material-preview{% if continue_project.lining_fabric %} material-preview--lined{% endif %}" aria-label="Project fabrics">
+              <div class="material-preview__outer">
+                <small>Outer fabric</small>
+                <strong>{{ continue_project.outer_fabric.name }}</strong>
+              </div>
+              {% if continue_project.lining_fabric %}
+                <div class="material-preview__lining">
+                  <small>Lining fabric</small>
+                  <strong>{{ continue_project.lining_fabric.name }}</strong>
+                </div>
+              {% endif %}
             </div>
           {% endif %}
         </div>
@@ -118,8 +132,8 @@
   <section class="dashboard-card overview-card">
     <div class="card-heading">
       <div>
-        <p class="card-kicker">Project overview</p>
-        <h2>Your pipeline</h2>
+        <p class="card-kicker">Overview</p>
+        <h2>Project status</h2>
       </div>
     </div>
     <div class="pipeline-list">
@@ -145,10 +159,13 @@
   <section class="dashboard-card stash-card">
     <div class="card-heading">
       <div>
-        <p class="card-kicker">Fabric stash</p>
-        <h2>{{ fabric_count }} fabric{% if fabric_count != 1 %}s{% endif %}</h2>
+        <p class="card-kicker">Library</p>
+        <h2>Fabric stash</h2>
       </div>
-      <span class="yardage-total">{{ "%g"|format(total_fabric_yards) }} yd total</span>
+      <div class="stash-summary">
+        <strong>{{ fabric_count }}</strong>
+        <span>fabric{% if fabric_count != 1 %}s{% endif %} · {{ "%g"|format(total_fabric_yards) }} yd</span>
+      </div>
     </div>
 
     {% if recent_fabrics %}
@@ -169,8 +186,8 @@
   <section class="dashboard-card patterns-card">
     <div class="card-heading">
       <div>
-        <p class="card-kicker">Recent patterns</p>
-        <h2>Ready to make</h2>
+        <p class="card-kicker">Library</p>
+        <h2>Recent patterns</h2>
       </div>
     </div>
 
@@ -182,7 +199,7 @@
               {% if pattern.image_url %}
                 <img src="{{ pattern.image_url }}" alt="">
               {% else %}
-                <span class="pattern-thumb" aria-hidden="true">{{ pattern.name[0] }}</span>
+                <span class="pattern-thumb" aria-hidden="true"></span>
               {% endif %}
               <span class="pattern-list__copy">
                 <strong>{{ pattern.name }}</strong>
@@ -202,8 +219,8 @@
   <section class="dashboard-card quick-card">
     <div class="card-heading">
       <div>
-        <p class="card-kicker">Quick add</p>
-        <h2>Start here</h2>
+        <p class="card-kicker">Create</p>
+        <h2>Quick add</h2>
       </div>
     </div>
     <nav class="quick-links" aria-label="Quick add">
@@ -216,8 +233,8 @@
   <section class="dashboard-card projects-card">
     <div class="card-heading">
       <div>
-        <p class="card-kicker">Your projects</p>
-        <h2>Across the worktable</h2>
+        <p class="card-kicker">Overview</p>
+        <h2>Your projects</h2>
       </div>
       <a class="text-action" href="{{ url_for('projects.list_projects') }}">View all projects →</a>
     </div>
