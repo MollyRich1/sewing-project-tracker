@@ -1,25 +1,10 @@
 {% extends "base.html" %}
-
-{% macro fabric_swatch(fabric, accent="sage") %}
-  {% if fabric.image_url %}
-    <img class="swatch-image" src="{{ fabric.image_url }}" alt="{{ fabric.name }}">
-  {% else %}
-    <span class="fabric-swatch fabric-swatch--{{ accent }}">
-      <span class="visually-hidden">{{ fabric.name }} swatch</span>
-    </span>
-  {% endif %}
-{% endmacro %}
+{% from "_media.html" import fabric_swatch, pattern_thumb, project_thumb %}
 
 {% macro compact_project(project) %}
   <li class="mini-project">
     <div class="mini-project__visual">
-      {% if project.pattern.image_url %}
-        <img src="{{ project.pattern.image_url }}" alt="">
-      {% elif project.outer_fabric.image_url %}
-        <img src="{{ project.outer_fabric.image_url }}" alt="">
-      {% else %}
-        <span class="mini-fabric-preview" aria-hidden="true"></span>
-      {% endif %}
+      {{ project_thumb(project) }}
     </div>
     <div class="mini-project__body">
       <span class="status-label status-label--{{ project.status|lower|replace(' ', '-') }}">{{ project.status }}</span>
@@ -72,24 +57,7 @@
     {% if continue_project %}
       <div class="continue-layout">
         <div class="project-visual">
-          {% if continue_project.pattern.image_url %}
-            <img src="{{ continue_project.pattern.image_url }}" alt="{{ continue_project.pattern.name }}">
-          {% elif continue_project.outer_fabric.image_url %}
-            <img src="{{ continue_project.outer_fabric.image_url }}" alt="{{ continue_project.outer_fabric.name }}">
-          {% else %}
-            <div class="material-preview{% if continue_project.lining_fabric %} material-preview--lined{% endif %}" aria-label="Project fabrics">
-              <div class="material-preview__outer">
-                <small>Outer fabric</small>
-                <strong>{{ continue_project.outer_fabric.name }}</strong>
-              </div>
-              {% if continue_project.lining_fabric %}
-                <div class="material-preview__lining">
-                  <small>Lining fabric</small>
-                  <strong>{{ continue_project.lining_fabric.name }}</strong>
-                </div>
-              {% endif %}
-            </div>
-          {% endif %}
+          {{ project_thumb(continue_project, alt=continue_project.name) }}
         </div>
         <div class="continue-details">
           <p class="project-pattern">{{ continue_project.pattern.name }}</p>
@@ -196,8 +164,8 @@
         {% for pattern in recent_patterns %}
           <li>
             <a href="{{ url_for('patterns.detail', pattern_id=pattern.id) }}">
-              {% if pattern.image_url %}
-                <img src="{{ pattern.image_url }}" alt="">
+              {% if pattern.image_url and image_src(pattern.image_url) %}
+                {{ pattern_thumb(pattern, class_name="pattern-thumb") }}
               {% else %}
                 <span class="pattern-thumb" aria-hidden="true"></span>
               {% endif %}

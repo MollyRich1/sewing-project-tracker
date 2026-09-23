@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_media.html" import image_upload_field %}
 
 {% block title %}{{ title }} · Stitchbook{% endblock %}
 
@@ -10,7 +11,7 @@
 
 {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
 
-<form method="post" class="form-card">
+<form method="post" class="form-card" enctype="multipart/form-data">
   <label>
     Name
     <input type="text" name="name" value="{{ form.name }}" required>
@@ -27,10 +28,7 @@
     Notes
     <textarea name="notes" rows="3">{{ form.notes }}</textarea>
   </label>
-  <label>
-    Image URL
-    <input type="url" name="image_url" value="{{ form.image_url }}">
-  </label>
+  {{ image_upload_field(current_url=fabric.image_url if fabric is defined else none, label="Fabric photo") }}
   <button type="submit" class="button">Save fabric</button>
 </form>
 {% endblock %}

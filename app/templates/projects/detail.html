@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_media.html" import fabric_swatch, piece_thumb, project_thumb %}
 
 {% block title %}{{ project.name }} · Stitchbook{% endblock %}
 
@@ -12,6 +13,10 @@
   </p>
 </section>
 
+<div class="detail-visual">
+  {{ project_thumb(project, class_name="detail-visual__image") }}
+</div>
+
 <section class="card">
   <h2>Project plan</h2>
   <p>Pattern: <a href="{{ url_for('patterns.detail', pattern_id=project.pattern.id) }}">{{ project.pattern.name }}</a></p>
@@ -22,13 +27,23 @@
 
 <section class="yardage-comparison">
   <h2>Fabric plan</h2>
-  <h3>Outer fabric: {{ project.outer_fabric.name }}</h3>
+  <h3 class="fabric-heading">
+    {{ fabric_swatch(project.outer_fabric, "sage") }}
+    <span>Outer fabric: {{ project.outer_fabric.name }}</span>
+  </h3>
   <p>Pattern requires: {{ project.pattern.outer_yards_required }} yards</p>
   <p>Fabric available: {{ project.outer_fabric.yards_available }} yards</p>
   <p>Enough fabric: {{ "Yes" if outer_enough else "No" }}</p>
 
   {% if pattern_requires_lining %}
-    <h3>Lining fabric{% if project.lining_fabric %}: {{ project.lining_fabric.name }}{% endif %}</h3>
+    <h3 class="fabric-heading">
+      {% if project.lining_fabric %}
+        {{ fabric_swatch(project.lining_fabric, "blush") }}
+        <span>Lining fabric: {{ project.lining_fabric.name }}</span>
+      {% else %}
+        <span>Lining fabric</span>
+      {% endif %}
+    </h3>
     <p>Pattern requires: {{ project.pattern.lining_yards_required }} yards</p>
     {% if project.lining_fabric %}
       <p>Fabric available: {{ project.lining_fabric.yards_available }} yards</p>
@@ -53,7 +68,7 @@
           {% if piece.measurements %}<p>{{ piece.measurements }}</p>{% endif %}
           {% if piece.fabric_type %}<p>Fabric type: {{ piece.fabric_type }}</p>{% endif %}
           {% if piece.notes %}<p>{{ piece.notes }}</p>{% endif %}
-          {% if piece.image_url %}<img class="piece-image" src="{{ piece.image_url }}" alt="{{ piece.piece_name }}">{% endif %}
+          {{ piece_thumb(piece) }}
         </li>
       {% endfor %}
     </ul>

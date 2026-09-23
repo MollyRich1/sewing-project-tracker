@@ -2,6 +2,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from app.constants import PROJECT_STATUSES, STATUS_IN_PROGRESS
 from app.helpers import has_enough_fabric, pattern_requires_lining
+from app.images import delete_local_image, replace_image
 from app.models import Fabric, Pattern, Project, db
 
 bp = Blueprint("projects", __name__, url_prefix="/projects")
@@ -176,6 +177,7 @@ def create_project():
         )
         try:
             _apply_form(project, form)
+            replace_image(project, request.files.get("image"), "projects")
         except ValueError as error:
             return _render_form(
                 "Create project", form, error=str(error), status_code=400
@@ -220,6 +222,9 @@ def edit_project(project_id):
         form = _form_from_request(request.form)
         try:
             _apply_form(project, form)
+            previous = replace_image(
+                project, request.files.get("image"), "projects"
+            )
         except ValueError as error:
             return _render_form(
                 "Edit project",
@@ -229,6 +234,7 @@ def edit_project(project_id):
                 status_code=400,
             )
         db.session.commit()
+        delete_local_image(previous)
         flash("Project updated.")
         return redirect(url_for("projects.detail", project_id=project.id))
 
@@ -255,8 +261,10 @@ def change_status(project_id):
 def delete_project(project_id):
     project = db.get_or_404(Project, project_id)
     if request.method == "POST":
+        image_url = project.image_url
         db.session.delete(project)
         db.session.commit()
+        delete_local_image(image_url)
         flash("Project deleted.")
         return redirect(url_for("projects.list_projects"))
     return render_template("projects/delete.html", project=project)

@@ -151,4 +151,7 @@ def register_seed_commands(app):
             )
         db.drop_all()
         db.create_all()
+        from app.images import clear_uploaded_files
+
+        clear_uploaded_files()
         click.echo("Reset the database. It is now empty.")

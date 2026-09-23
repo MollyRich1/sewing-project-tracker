@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_media.html" import image_upload_field, pattern_thumb, piece_thumb %}
 
 {% block title %}{{ pattern.name }} · Stitchbook{% endblock %}
 
@@ -12,8 +13,10 @@
   </p>
 </section>
 
-{% if pattern.image_url %}
-  <p><img class="detail-image" src="{{ pattern.image_url }}" alt="{{ pattern.name }}"></p>
+{% if pattern.image_url and image_src(pattern.image_url) %}
+  <div class="detail-visual">
+    {{ pattern_thumb(pattern, class_name="detail-visual__image") }}
+  </div>
 {% endif %}
 
 <dl class="detail-list">
@@ -50,9 +53,7 @@
           {% if piece.measurements %}<p>Measurements: {{ piece.measurements }}</p>{% endif %}
           {% if piece.fabric_type %}<p>Fabric type: {{ piece.fabric_type }}</p>{% endif %}
           {% if piece.notes %}<p>{{ piece.notes }}</p>{% endif %}
-          {% if piece.image_url %}
-            <p><img class="piece-image" src="{{ piece.image_url }}" alt="{{ piece.piece_name }}"></p>
-          {% endif %}
+          {{ piece_thumb(piece) }}
           <p>
             <a href="{{ url_for('patterns.edit_piece', pattern_id=pattern.id, piece_id=piece.id) }}">Edit</a>
             ·
@@ -71,7 +72,7 @@
   {% if piece_error %}
     <p class="form-error">{{ piece_error }}</p>
   {% endif %}
-  <form method="post" action="{{ url_for('patterns.add_piece', pattern_id=pattern.id) }}" class="form-card">
+  <form method="post" action="{{ url_for('patterns.add_piece', pattern_id=pattern.id) }}" class="form-card" enctype="multipart/form-data">
     <label>
       Piece name
       <input type="text" name="piece_name" value="{{ piece_form.piece_name }}" required>
@@ -92,10 +93,7 @@
       Notes
       <textarea name="notes" rows="2">{{ piece_form.notes }}</textarea>
     </label>
-    <label>
-      Image URL
-      <input type="url" name="image_url" value="{{ piece_form.image_url }}">
-    </label>
+    {{ image_upload_field(label="Piece photo") }}
     <button type="submit" class="button">Add piece</button>
   </form>
 </section>

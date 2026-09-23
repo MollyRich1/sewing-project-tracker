@@ -1,8 +1,25 @@
 from datetime import datetime, timezone
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect, text
 
 db = SQLAlchemy()
+
+
+def ensure_schema():
+    """Create missing tables and add new nullable columns without dropping data."""
+    db.create_all()
+    if db.engine.dialect.name != "sqlite":
+        return
+    inspector = inspect(db.engine)
+    if "projects" not in inspector.get_table_names():
+        return
+    columns = {column["name"] for column in inspector.get_columns("projects")}
+    if "image_url" not in columns:
+        with db.engine.begin() as connection:
+            connection.execute(
+                text("ALTER TABLE projects ADD COLUMN image_url VARCHAR(500)")
+            )
 
 
 def _utcnow():
@@ -113,6 +130,7 @@ class Project(db.Model):
     )
     status = db.Column(db.String(50), nullable=False)
     notes = db.Column(db.Text, nullable=True)
+    image_url = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=_utcnow)
 
     pattern = db.relationship("Pattern", back_populates="projects")

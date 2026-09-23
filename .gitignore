@@ -5,5 +5,6 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 instance/*.db
+instance/uploads/
 .env
 .DS_Store

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_media.html" import fabric_thumb %}
 
 {% block title %}Fabrics · Stitchbook{% endblock %}
 
@@ -11,19 +12,19 @@
 {% if fabrics %}
   <ul class="card-list">
     {% for fabric in fabrics %}
-      <li class="card">
-        {% if fabric.image_url %}
-          <img class="piece-image" src="{{ fabric.image_url }}" alt="{{ fabric.name }}">
-        {% endif %}
-        <h2>{{ fabric.name }}</h2>
-        <p>{{ fabric.yards_available }} yards available</p>
-        {% if fabric.description %}<p>{{ fabric.description }}</p>{% endif %}
-        {% if fabric.notes %}<p>{{ fabric.notes }}</p>{% endif %}
-        <p>
-          <a href="{{ url_for('fabrics.edit_fabric', fabric_id=fabric.id) }}">Edit</a>
-          ·
-          <a href="{{ url_for('fabrics.delete_fabric', fabric_id=fabric.id) }}">Delete</a>
-        </p>
+      <li class="card media-card">
+        {{ fabric_thumb(fabric) }}
+        <div>
+          <h2>{{ fabric.name }}</h2>
+          <p>{{ fabric.yards_available }} yards available</p>
+          {% if fabric.description %}<p>{{ fabric.description }}</p>{% endif %}
+          {% if fabric.notes %}<p>{{ fabric.notes }}</p>{% endif %}
+          <p>
+            <a href="{{ url_for('fabrics.edit_fabric', fabric_id=fabric.id) }}">Edit</a>
+            ·
+            <a href="{{ url_for('fabrics.delete_fabric', fabric_id=fabric.id) }}">Delete</a>
+          </p>
+        </div>
       </li>
     {% endfor %}
   </ul>

@@ -7,6 +7,7 @@ from app.helpers import (
     pattern_is_deletable,
     pattern_requires_lining,
 )
+from app.images import delete_local_image, replace_image
 from app.models import Pattern, PatternPiece, db
 
 bp = Blueprint("patterns", __name__, url_prefix="/patterns")
@@ -20,7 +21,6 @@ def _blank_pattern_form():
         "outer_yards_required": "",
         "lining_yards_required": "",
         "notions": "",
-        "image_url": "",
     }
 
 
@@ -33,7 +33,6 @@ def _pattern_form_from_model(pattern):
         "outer_yards_required": pattern.outer_yards_required,
         "lining_yards_required": "" if lining is None else lining,
         "notions": pattern.notions or "",
-        "image_url": pattern.image_url or "",
     }
 
 
@@ -45,7 +44,6 @@ def _pattern_form_from_request(form):
         "outer_yards_required": form.get("outer_yards_required", "").strip(),
         "lining_yards_required": form.get("lining_yards_required", "").strip(),
         "notions": form.get("notions", "").strip(),
-        "image_url": form.get("image_url", "").strip(),
     }
 
 
@@ -66,7 +64,6 @@ def _apply_pattern_form(pattern, values):
         required=False,
     )
     pattern.notions = values["notions"] or None
-    pattern.image_url = values["image_url"] or None
 
 
 def _blank_piece_form():
@@ -75,7 +72,6 @@ def _blank_piece_form():
         "quantity_to_cut": "",
         "measurements": "",
         "fabric_type": "",
-        "image_url": "",
         "notes": "",
     }
 
@@ -86,7 +82,6 @@ def _piece_form_from_model(piece):
         "quantity_to_cut": piece.quantity_to_cut,
         "measurements": piece.measurements or "",
         "fabric_type": piece.fabric_type or "",
-        "image_url": piece.image_url or "",
         "notes": piece.notes or "",
     }
 
@@ -97,7 +92,6 @@ def _piece_form_from_request(form):
         "quantity_to_cut": form.get("quantity_to_cut", "").strip(),
         "measurements": form.get("measurements", "").strip(),
         "fabric_type": form.get("fabric_type", "").strip(),
-        "image_url": form.get("image_url", "").strip(),
         "notes": form.get("notes", "").strip(),
     }
 
@@ -109,7 +103,6 @@ def _apply_piece_form(piece, values):
     piece.quantity_to_cut = parse_quantity_to_cut(values["quantity_to_cut"])
     piece.measurements = values["measurements"] or None
     piece.fabric_type = values["fabric_type"] or None
-    piece.image_url = values["image_url"] or None
     piece.notes = values["notes"] or None
 
 
@@ -130,6 +123,7 @@ def create_pattern():
         )
         try:
             _apply_pattern_form(pattern, values)
+            replace_image(pattern, request.files.get("image"), "patterns")
         except ValueError as error:
             return render_template(
                 "patterns/form.html",
@@ -170,6 +164,9 @@ def edit_pattern(pattern_id):
         values = _pattern_form_from_request(request.form)
         try:
             _apply_pattern_form(pattern, values)
+            previous = replace_image(
+                pattern, request.files.get("image"), "patterns"
+            )
         except ValueError as error:
             return render_template(
                 "patterns/form.html",
@@ -179,6 +176,7 @@ def edit_pattern(pattern_id):
                 pattern=pattern,
             ), 400
         db.session.commit()
+        delete_local_image(previous)
         flash("Pattern updated.")
         return redirect(url_for("patterns.detail", pattern_id=pattern.id))
 
@@ -203,8 +201,13 @@ def delete_pattern(pattern_id):
         ), 409 if request.method == "POST" else 200
 
     if request.method == "POST":
+        image_paths = [pattern.image_url] + [
+            piece.image_url for piece in pattern.pieces
+        ]
         db.session.delete(pattern)
         db.session.commit()
+        for image_path in image_paths:
+            delete_local_image(image_path)
         flash("Pattern deleted.")
         return redirect(url_for("patterns.list_patterns"))
 
@@ -222,6 +225,7 @@ def add_piece(pattern_id):
     piece = PatternPiece(piece_name="placeholder", quantity_to_cut=1)
     try:
         _apply_piece_form(piece, values)
+        replace_image(piece, request.files.get("image"), "pieces")
     except ValueError as error:
         return render_template(
             "patterns/detail.html",
@@ -249,6 +253,9 @@ def edit_piece(pattern_id, piece_id):
         values = _piece_form_from_request(request.form)
         try:
             _apply_piece_form(piece, values)
+            previous = replace_image(
+                piece, request.files.get("image"), "pieces"
+            )
         except ValueError as error:
             return render_template(
                 "patterns/piece_form.html",
@@ -258,6 +265,7 @@ def edit_piece(pattern_id, piece_id):
                 error=str(error),
             ), 400
         db.session.commit()
+        delete_local_image(previous)
         flash("Pattern piece updated.")
         return redirect(url_for("patterns.detail", pattern_id=pattern.id))
 
@@ -278,8 +286,10 @@ def delete_piece(pattern_id, piece_id):
         return ("Pattern piece not found.", 404)
 
     if request.method == "POST":
+        image_url = piece.image_url
         db.session.delete(piece)
         db.session.commit()
+        delete_local_image(image_url)
         flash("Pattern piece deleted.")
         return redirect(url_for("patterns.detail", pattern_id=pattern.id))
 

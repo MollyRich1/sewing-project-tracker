@@ -1,20 +1,6 @@
 # Stitchbook
 
-> **TODO: Add a Stitchbook banner here.**
->
-> Recommended size: **1280×420 px** (about 3:1). A square logo around **400×400 px**, placed beside the title, also works.
->
-> Suggested path: `docs/assets/stitchbook-banner.png`
->
-> Visual direction: match the app. Light background (`#f7f8fa`), blue (`#4f7cff`), and a little blush (`#f6d7e7`) or lavender (`#e9e0ff`). Clean, modern, and sewing-related. A simple stitch or notebook mark is enough. Avoid a vintage or heavily decorative treatment.
->
-> Suggested content: the word **Stitchbook** and the line already used in the app, "Patterns, fabrics, and current makes—all in one place."
->
-> After the file exists, replace this note with:
->
-> ```markdown
-> ![Stitchbook banner](docs/assets/stitchbook-banner.png)
-> ```
+![Stitchbook banner. The word Stitchbook beside a needle-and-thread mark, with the line "Patterns, fabrics, and current makes—all in one place."](docs/assets/stitchbook-banner.jpg)
 
 Stitchbook is a small local web app for keeping sewing projects, patterns, and fabric in one place. It is for someone who sews and wants one spot for what they are making, which pattern it uses, and whether the fabric on hand is enough.
 

@@ -5,6 +5,7 @@ from app.helpers import (
     get_projects_blocking_fabric_delete,
     parse_non_negative_float,
 )
+from app.images import delete_local_image, replace_image
 from app.models import Fabric, db
 
 bp = Blueprint("fabrics", __name__, url_prefix="/fabrics")
@@ -16,7 +17,6 @@ def _blank_form():
         "yards_available": "",
         "description": "",
         "notes": "",
-        "image_url": "",
     }
 
 
@@ -26,7 +26,6 @@ def _form_from_model(fabric):
         "yards_available": fabric.yards_available,
         "description": fabric.description or "",
         "notes": fabric.notes or "",
-        "image_url": fabric.image_url or "",
     }
 
 
@@ -36,7 +35,6 @@ def _form_from_request(form):
         "yards_available": form.get("yards_available", "").strip(),
         "description": form.get("description", "").strip(),
         "notes": form.get("notes", "").strip(),
-        "image_url": form.get("image_url", "").strip(),
     }
 
 
@@ -49,7 +47,6 @@ def _apply_form(fabric, values):
     )
     fabric.description = values["description"] or None
     fabric.notes = values["notes"] or None
-    fabric.image_url = values["image_url"] or None
 
 
 @bp.route("/")
@@ -65,6 +62,7 @@ def create_fabric():
         fabric = Fabric(name="placeholder", yards_available=0)
         try:
             _apply_form(fabric, values)
+            replace_image(fabric, request.files.get("image"), "fabrics")
         except ValueError as error:
             return render_template(
                 "fabrics/form.html",
@@ -89,6 +87,9 @@ def edit_fabric(fabric_id):
         values = _form_from_request(request.form)
         try:
             _apply_form(fabric, values)
+            previous = replace_image(
+                fabric, request.files.get("image"), "fabrics"
+            )
         except ValueError as error:
             return render_template(
                 "fabrics/form.html",
@@ -98,6 +99,7 @@ def edit_fabric(fabric_id):
                 fabric=fabric,
             ), 400
         db.session.commit()
+        delete_local_image(previous)
         flash("Fabric updated.")
         return redirect(url_for("fabrics.list_fabrics"))
 
@@ -129,8 +131,10 @@ def delete_fabric(fabric_id):
         ), 409 if request.method == "POST" else 200
 
     if request.method == "POST":
+        image_url = fabric.image_url
         db.session.delete(fabric)
         db.session.commit()
+        delete_local_image(image_url)
         flash("Fabric deleted.")
         return redirect(url_for("fabrics.list_fabrics"))
 

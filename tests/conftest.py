@@ -7,10 +7,12 @@ from app.models import db
 @pytest.fixture
 def app(tmp_path):
     db_path = tmp_path / "test.db"
+    upload_path = tmp_path / "uploads"
     application = create_app(
         {
             "TESTING": True,
             "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
+            "UPLOAD_FOLDER": str(upload_path),
         }
     )
     yield application

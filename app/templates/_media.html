@@ -1,0 +1,57 @@
+{% macro fabric_swatch(fabric, accent="sage") %}
+  {% if fabric.image_url and image_src(fabric.image_url) %}
+    <img class="swatch-image" src="{{ image_src(fabric.image_url) }}" alt="{{ fabric.name }}" loading="lazy">
+  {% else %}
+    <span class="fabric-swatch fabric-swatch--{{ accent }}">
+      <span class="visually-hidden">{{ fabric.name }} swatch</span>
+    </span>
+  {% endif %}
+{% endmacro %}
+
+{% macro fabric_thumb(fabric, class_name="card-thumb") %}
+  {% if fabric.image_url and image_src(fabric.image_url) %}
+    <img class="{{ class_name }}" src="{{ image_src(fabric.image_url) }}" alt="{{ fabric.name }}" loading="lazy">
+  {% else %}
+    <span class="{{ class_name }} media-placeholder media-placeholder--fabric" aria-hidden="true"></span>
+  {% endif %}
+{% endmacro %}
+
+{% macro pattern_thumb(pattern, class_name="card-thumb") %}
+  {% if pattern.image_url and image_src(pattern.image_url) %}
+    <img class="{{ class_name }}" src="{{ image_src(pattern.image_url) }}" alt="{{ pattern.name }}">
+  {% else %}
+    <span class="{{ class_name }} media-placeholder media-placeholder--pattern" aria-hidden="true"></span>
+  {% endif %}
+{% endmacro %}
+
+{% macro project_thumb(project, class_name="", alt="") %}
+  {% set src = project_image_ref(project) %}
+  {% if src and image_src(src) %}
+    <img{% if class_name %} class="{{ class_name }}"{% endif %} src="{{ image_src(src) }}" alt="{{ alt or project.name }}">
+  {% else %}
+    <span{% if class_name %} class="{{ class_name }} media-placeholder media-placeholder--project"{% else %} class="media-placeholder media-placeholder--project"{% endif %} aria-hidden="true"></span>
+  {% endif %}
+{% endmacro %}
+
+{% macro piece_thumb(piece, class_name="piece-image") %}
+  {% if piece.image_url and image_src(piece.image_url) %}
+    <img class="{{ class_name }}" src="{{ image_src(piece.image_url) }}" alt="{{ piece.piece_name }}" loading="lazy">
+  {% endif %}
+{% endmacro %}
+
+{% macro image_upload_field(current_url=None, label="Photo") %}
+  <div class="image-field">
+    <span class="image-field__label">{{ label }}</span>
+    {% if current_url and image_src(current_url) %}
+      <div class="image-field__current">
+        <img src="{{ image_src(current_url) }}" alt="Current photo">
+        <span class="hint">Current photo. Choose a new file to replace it, or leave this empty to keep it.</span>
+      </div>
+    {% endif %}
+    <label class="image-field__control">
+      <span class="visually-hidden">{{ label }} file</span>
+      <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+      <span class="hint">Optional. JPG, PNG, or WebP. Maximum 5 MB.</span>
+    </label>
+  </div>
+{% endmacro %}
