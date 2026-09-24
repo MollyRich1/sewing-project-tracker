@@ -155,6 +155,17 @@
     return have >= need ? "Yes" : "No";
   }
 
+  function setEnough(selector, label) {
+    const node = root.querySelector(selector);
+    const result = node && node.querySelector("[data-yardage-result]");
+    if (!result) {
+      return;
+    }
+    result.textContent = label || "";
+    result.classList.toggle("yardage-result--yes", label === "Yes");
+    result.classList.toggle("yardage-result--no", label === "No");
+  }
+
   function updateProject() {
     const name = fieldValue("name") || "Untitled project";
     const status = fieldValue("status") || "In Progress";
@@ -211,7 +222,7 @@
         outerMissing.hidden = true;
       }
       text("[data-yardage-outer-available]", `Selected fabric available: ${outerAvailable} yards`);
-      text("[data-yardage-outer-enough]", `Enough fabric: ${enoughLabel(outerAvailable, outerRequired)}`);
+      setEnough("[data-yardage-outer-enough]", enoughLabel(outerAvailable, outerRequired));
     } else {
       if (outerDetails) {
         outerDetails.hidden = true;
@@ -245,9 +256,9 @@
           "[data-yardage-lining-available]",
           `Selected fabric available: ${liningAvailable} yards`
         );
-        text(
+        setEnough(
           "[data-yardage-lining-enough]",
-          `Enough fabric: ${enoughLabel(liningAvailable, liningRequired)}`
+          enoughLabel(liningAvailable, liningRequired)
         );
       } else {
         if (liningDetails) {

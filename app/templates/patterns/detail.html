@@ -8,7 +8,7 @@
   <h1>{{ pattern.name }}</h1>
   <p>
     <a class="button secondary" href="{{ url_for('patterns.edit_pattern', pattern_id=pattern.id) }}">Edit</a>
-    <a class="button secondary" href="{{ url_for('patterns.delete_pattern', pattern_id=pattern.id) }}">Delete</a>
+    <a class="button danger-outline" href="{{ url_for('patterns.delete_pattern', pattern_id=pattern.id) }}">Delete</a>
     <a href="{{ url_for('patterns.list_patterns') }}">Back to patterns</a>
   </p>
 </section>
@@ -57,7 +57,7 @@
           <p>
             <a href="{{ url_for('patterns.edit_piece', pattern_id=pattern.id, piece_id=piece.id) }}">Edit</a>
             ·
-            <a href="{{ url_for('patterns.delete_piece', pattern_id=pattern.id, piece_id=piece.id) }}">Delete</a>
+            <a class="link-danger" href="{{ url_for('patterns.delete_piece', pattern_id=pattern.id, piece_id=piece.id) }}">Delete</a>
           </p>
         </li>
       {% endfor %}

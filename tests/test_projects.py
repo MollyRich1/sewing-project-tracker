@@ -138,10 +138,11 @@ def test_project_preview_shows_yardage_and_enough_answers(client):
     assert b"Estimated time: 3.5 hours" in response.data
     assert b"Pattern requires: 1.0 yards" in response.data
     assert b"Selected fabric available: 2.5 yards" in response.data
-    assert b"Enough fabric: Yes" in response.data
+    assert b"Enough fabric:" in response.data
+    assert b'yardage-result--yes" data-yardage-result>Yes<' in response.data
     assert b"Pattern requires: 0.75 yards" in response.data
     assert b"Selected fabric available: 0.5 yards" in response.data
-    assert b"Enough fabric: No" in response.data
+    assert b'yardage-result--no" data-yardage-result>No<' in response.data
     assert b"Selected fabrics" in response.data
     assert b"Plenty of Canvas" in response.data
     assert b"2.5 yd on hand" in response.data
@@ -186,7 +187,8 @@ def test_insufficient_fabric_does_not_block_save_or_change_inventory(client):
     assert response.status_code == 200
     assert Project.query.count() == 1
     assert db.session.get(Fabric, outer.id).yards_available == 1.0
-    assert b"Enough fabric: No" in response.data
+    assert b"Enough fabric:" in response.data
+    assert b'yardage-result--no">No<' in response.data
 
 
 def test_project_list_filters_by_status_and_defaults_to_in_progress(client):

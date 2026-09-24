@@ -163,7 +163,7 @@
         <p data-yardage-outer-required>{% if selected_pattern %}Pattern requires: {{ selected_pattern.outer_yards_required }} yards{% endif %}</p>
         <div data-yardage-outer-details {% if not selected_outer %}hidden{% endif %}>
           <p data-yardage-outer-available>{% if selected_outer %}Selected fabric available: {{ selected_outer.yards_available }} yards{% endif %}</p>
-          <p data-yardage-outer-enough>{% if selected_outer %}Enough fabric: {{ "Yes" if outer_enough else "No" }}{% endif %}</p>
+          <p data-yardage-outer-enough>Enough fabric: <span class="yardage-result{% if selected_outer %} yardage-result--{{ 'yes' if outer_enough else 'no' }}{% endif %}" data-yardage-result>{% if selected_outer %}{{ "Yes" if outer_enough else "No" }}{% endif %}</span></p>
         </div>
         <p data-yardage-outer-missing {% if selected_outer %}hidden{% endif %}>Select an outer fabric to compare yardage.</p>
 
@@ -172,7 +172,7 @@
           <p data-yardage-lining-required>{% if selected_pattern and pattern_requires_lining %}Pattern requires: {{ selected_pattern.lining_yards_required }} yards{% endif %}</p>
           <div data-yardage-lining-details {% if not selected_lining %}hidden{% endif %}>
             <p data-yardage-lining-available>{% if selected_lining %}Selected fabric available: {{ selected_lining.yards_available }} yards{% endif %}</p>
-            <p data-yardage-lining-enough>{% if selected_lining %}Enough fabric: {{ "Yes" if lining_enough else "No" }}{% endif %}</p>
+            <p data-yardage-lining-enough>Enough fabric: <span class="yardage-result{% if selected_lining %} yardage-result--{{ 'yes' if lining_enough else 'no' }}{% endif %}" data-yardage-result>{% if selected_lining %}{{ "Yes" if lining_enough else "No" }}{% endif %}</span></p>
           </div>
           {% if selected_pattern and pattern_requires_lining and not selected_lining %}
             <p class="notice" data-yardage-lining-needed>Lining is still needed.</p>

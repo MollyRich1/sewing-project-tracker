@@ -129,38 +129,7 @@ Photos are optional on each of these forms.
 4. Watch the **Project Preview** panel. It updates with the estimated time, required yardage, available fabric, and whether there is enough fabric. Nothing is saved yet.
 5. Choose **Save project** when the plan looks right. The project page shows the same comparison, plus the pieces to cut.
 
-> **TODO: Record the project-creation and yardage-preview demo.**
->
-> This recording belongs here, after the steps above.
->
-> Suggested filename: `docs/assets/preview-project-yardage.mp4`
->
-> Prefer a short MP4. Use an optimized GIF with the same basename if you need the motion to render inline from the repository. Keep it silent and under 20 seconds. About **12–15 seconds** is enough.
->
-> Why motion helps: the Project Preview panel updates as the pattern and fabric change, including the enough-fabric answer.
->
-> Record this sequence, using the seeded data:
->
-> 1. Start on **+ New Project** with the form and the right-side Project Preview both visible. Pause briefly.
-> 2. Type a short name, such as `Apron test`.
-> 3. Choose the pattern **Cross-back Apron** (2 yards outer, no lining).
-> 4. Choose the outer fabric **Blue Floral Cotton** (1.25 yards on hand).
-> 5. Pause while the side panel shows the pattern details and **Enough fabric: No**.
-> 6. If time remains, change the outer fabric to **Natural Cotton Canvas** (2.5 yards) and pause while the preview updates to **Yes**.
->
-> Do not click a Preview yardage button. That control is no longer on the page. Saving is optional for this clip.
->
-> Crop so the form and the Project Preview panel are readable together. Hide the rest of the desktop. Zoom enough that the pattern name, fabric name, and Yes/No line are readable at README width. Use slow cursor movement, and hold still for about a second at the start and end.
->
-> After the file exists and you have confirmed that it plays on the rendered README, replace this note with one of:
->
-> ```markdown
-> ![Previewing yardage while creating a project](docs/assets/preview-project-yardage.mp4)
-> ```
->
-> ```markdown
-> ![Previewing yardage while creating a project](docs/assets/preview-project-yardage.gif)
-> ```
+![Previewing yardage while creating a project](docs/assets/preview-project-yardage.gif)
 
 ### Change a project's status
 
@@ -170,34 +139,7 @@ Photos are optional on each of these forms.
 
 The same dropdown is on the dashboard and on the project page. From any of those places, saving a status opens the matching project list.
 
-> **TODO: Record the status-change demo.**
->
-> This recording belongs here, after the steps above.
->
-> Suggested filename: `docs/assets/change-project-status.mp4`
->
-> Same format guidance as the yardage demo: silent, under 20 seconds, about **8–12 seconds**. MP4 is the practical default. Use a GIF if the rendered README needs inline motion from a file in the repo.
->
-> Why motion helps: the project leaves one status group and shows up under another, which a still screenshot cannot show.
->
-> Record this sequence, using the seeded data:
->
-> 1. Open **Projects** so the **In Progress** tab is selected and **Market Day Tote** is visible. Pause briefly.
-> 2. Change that project's status dropdown from **In Progress** to **Planned**.
-> 3. Wait for the **Planned** tab to become active and for **Market Day Tote** to appear there.
-> 4. Pause on the Planned list.
->
-> Crop to the status tabs and the project card. Include the tab counts if they fit. Hide browser bookmarks and other desktop clutter. Zoom so the status names and project name are readable. Move the cursor slowly, and hold still for about a second at the start and end.
->
-> After the file exists and you have confirmed that it plays on the rendered README, replace this note with one of:
->
-> ```markdown
-> ![Changing a project from In Progress to Planned](docs/assets/change-project-status.mp4)
-> ```
->
-> ```markdown
-> ![Changing a project from In Progress to Planned](docs/assets/change-project-status.gif)
-> ```
+![Changing a project from In Progress to Planned](docs/assets/change-project-status.gif)
 
 ### Use the dashboard
 

@@ -114,22 +114,26 @@ h3,
 }
 
 .site-nav a[aria-current="page"] {
-  color: var(--primary);
-  text-decoration: none;
+  color: var(--primary-dark);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
 }
 
 .nav-action {
   min-height: var(--control-height);
   padding: 0.55rem 0.9rem;
   color: #fff;
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
   font-size: 0.84rem;
 }
 
 .nav-action:hover {
   color: #fff;
-  background: var(--primary-hover);
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
   text-decoration: none;
 }
 
@@ -412,7 +416,8 @@ h3,
   height: 16rem;
   border: 0;
   border-radius: 0;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
 }
 
 .fabric-heading {
@@ -614,6 +619,18 @@ h3,
   color: var(--error);
 }
 
+.yardage-result {
+  font-weight: 700;
+}
+
+.yardage-result--yes {
+  color: var(--status-completed);
+}
+
+.yardage-result--no {
+  color: var(--error);
+}
+
 .flash {
   padding: 0.8rem 1rem;
   background: var(--sage-soft);
@@ -624,8 +641,8 @@ h3,
   display: inline-block;
   padding: 0.65rem 1rem;
   color: #fff;
-  background: var(--primary);
-  border: 1px solid var(--primary);
+  background: var(--primary-hover);
+  border: 1px solid var(--primary-hover);
   border-radius: var(--control-radius);
   font: inherit;
   font-weight: 700;
@@ -634,7 +651,8 @@ h3,
 }
 
 .button:hover {
-  background: var(--primary-hover);
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 .button.secondary {
@@ -656,6 +674,26 @@ textarea:focus-visible {
   border-color: var(--rose);
 }
 
+.button.danger-outline {
+  color: var(--rose);
+  background: transparent;
+  border-color: var(--rose);
+}
+
+.button.danger-outline:hover {
+  color: var(--rose);
+  background: transparent;
+  border-color: var(--rose);
+}
+
+.link-danger {
+  color: var(--rose);
+}
+
+.link-danger:hover {
+  color: var(--rose);
+}
+
 .tabs {
   display: flex;
   gap: 0.25rem;
@@ -670,8 +708,9 @@ textarea:focus-visible {
 
 .tabs a.active {
   margin-bottom: -1px;
+  color: var(--primary-dark);
   font-weight: 700;
-  border-bottom: 3px solid var(--sage);
+  border-bottom: 3px solid var(--primary-dark);
 }
 
 .detail-list {
@@ -859,7 +898,8 @@ textarea:focus-visible {
   width: 100%;
   height: 100%;
   min-height: 14rem;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
 }
 
 .project-visual .media-placeholder {
@@ -1309,13 +1349,6 @@ textarea:focus-visible {
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--space-3);
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
-}
-
-.mini-project:hover {
-  border-color: #ccd7f5;
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-1px);
 }
 
 .mini-project__visual {
@@ -1371,6 +1404,11 @@ textarea:focus-visible {
 .mini-project h3 a {
   color: var(--text);
   text-decoration: none;
+}
+
+.mini-project h3 a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 .mini-project p,

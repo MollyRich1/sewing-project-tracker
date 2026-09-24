@@ -22,7 +22,7 @@
           <p>
             <a href="{{ url_for('fabrics.edit_fabric', fabric_id=fabric.id) }}">Edit</a>
             ·
-            <a href="{{ url_for('fabrics.delete_fabric', fabric_id=fabric.id) }}">Delete</a>
+            <a class="link-danger" href="{{ url_for('fabrics.delete_fabric', fabric_id=fabric.id) }}">Delete</a>
           </p>
         </div>
       </li>

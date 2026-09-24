@@ -8,7 +8,7 @@
   <h1>{{ project.name }}</h1>
   <p>
     <a class="button secondary" href="{{ url_for('projects.edit_project', project_id=project.id) }}">Edit</a>
-    <a class="button secondary" href="{{ url_for('projects.delete_project', project_id=project.id) }}">Delete</a>
+    <a class="button danger-outline" href="{{ url_for('projects.delete_project', project_id=project.id) }}">Delete</a>
     <a href="{{ url_for('projects.list_projects', status=project.status) }}">Back to projects</a>
   </p>
 </section>
@@ -21,7 +21,9 @@
   <h2>Project plan</h2>
   <p>Pattern: <a href="{{ url_for('patterns.detail', pattern_id=project.pattern.id) }}">{{ project.pattern.name }}</a></p>
   <p>Estimated time: {{ project.pattern.estimated_hours }} hours</p>
-  {% include "projects/_status_form.html" %}
+  <div class="compact-status">
+    {% include "projects/_status_form.html" %}
+  </div>
   {% if project.notes %}<p>Notes: {{ project.notes }}</p>{% endif %}
 </section>
 
@@ -33,7 +35,7 @@
   </h3>
   <p>Pattern requires: {{ project.pattern.outer_yards_required }} yards</p>
   <p>Fabric available: {{ project.outer_fabric.yards_available }} yards</p>
-  <p>Enough fabric: {{ "Yes" if outer_enough else "No" }}</p>
+  <p>Enough fabric: <span class="yardage-result yardage-result--{{ 'yes' if outer_enough else 'no' }}">{{ "Yes" if outer_enough else "No" }}</span></p>
 
   {% if pattern_requires_lining %}
     <h3 class="fabric-heading">
@@ -47,7 +49,7 @@
     <p>Pattern requires: {{ project.pattern.lining_yards_required }} yards</p>
     {% if project.lining_fabric %}
       <p>Fabric available: {{ project.lining_fabric.yards_available }} yards</p>
-      <p>Enough fabric: {{ "Yes" if lining_enough else "No" }}</p>
+      <p>Enough fabric: <span class="yardage-result yardage-result--{{ 'yes' if lining_enough else 'no' }}">{{ "Yes" if lining_enough else "No" }}</span></p>
     {% else %}
       <p class="notice">Lining is still needed.</p>
     {% endif %}
