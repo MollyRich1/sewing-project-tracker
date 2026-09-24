@@ -147,29 +147,45 @@ After a few records exist, the dashboard is the home page. It highlights the mos
 
 ## Architecture
 
-A browser request reaches a Flask route. That route reads or updates SQLAlchemy models directly when it only needs to load or save records. It calls shared helper code when the request needs validation, a yardage comparison, a delete check, or image handling. The route then renders a Jinja template, and the CSS in `app/static/css/style.css` styles the HTML sent back to the browser.
+A browser request reaches a Flask route. That route reads or updates SQLAlchemy models directly when it only needs to load or save records. It calls helper code for validation, a yardage comparison, or a delete check, and it calls image handling when a photo is involved. The route then renders a Jinja template. CSS and `app/static/js/form-preview.js` come back with the page.
 
-`app/images.py` stores uploaded files on local disk under `instance/uploads/`, grouped into `fabrics`, `patterns`, `projects`, and `pieces`. The database does not store the file itself. The related pattern, piece, fabric, or project stores the relative path in its `image_url` column. A small upload route serves those files back to the browser.
+`app/images.py` stores uploaded files on local disk under `instance/uploads/`, grouped into `fabrics`, `patterns`, `projects`, and `pieces`. The database does not store the file itself. The related pattern, piece, fabric, or project stores the relative path in its `image_url` column. A small upload route serves those files when the browser requests a photo.
 
 ```mermaid
 flowchart TD
     browser[Browser]
-    routes["Flask routes<br/>Dashboard, Projects, Patterns, Fabrics"]
-    helpers["Helper logic, when a route needs it<br/>app/helpers.py and app/images.py"]
-    models["SQLAlchemy models<br/>Pattern, PatternPiece, Fabric, Project"]
-    database[("SQLite<br/>instance/sewing.db")]
-    uploads["Image files on local disk<br/>instance/uploads/"]
-    templates["Jinja templates and static CSS"]
+    routes["Flask routes<br/>Dashboard · Projects · Patterns · Fabrics"]
 
     browser -->|HTTP request| routes
+
+    view["Jinja templates, CSS, and JavaScript<br/>returned to the browser"]
+    helpers["Helpers, only when needed<br/>validation · yardage · delete checks"]
+    models["SQLAlchemy models<br/>Pattern · PatternPiece · Fabric · Project"]
+    images["Image handling, only when needed<br/>save · replace · delete"]
+
+    routes -->|render the page| view
+    routes -->|shared rules| helpers
     routes -->|read or update records| models
-    routes -->|validation, yardage, deletes, or images| helpers
+    routes -->|photo changes| images
+
     helpers --> models
-    helpers -->|save or delete files| uploads
-    models -->|records, including image paths| database
-    routes -->|render a page| templates
-    templates -->|HTML| browser
-    uploads -->|served by the upload route| browser
+    images -->|file path saved on the record| models
+
+    db[("SQLite<br/>instance/sewing.db")]
+    uploads["Uploaded images<br/>instance/uploads/<br/>served back to the browser"]
+
+    models -->|records| db
+    images -->|files| uploads
+
+    classDef entry fill:#e8f0ff,stroke:#4f7cff,color:#111827
+    classDef optional fill:#f7f8fa,stroke:#6b7280,color:#111827
+    classDef data fill:#f3eefe,stroke:#8b5cf6,color:#111827
+    classDef files fill:#fdeef5,stroke:#c2416c,color:#111827
+
+    class browser,routes,view entry
+    class helpers,images optional
+    class models,db data
+    class uploads files
 ```
 
 Feature routes are split into blueprints so the dashboard, patterns, fabrics, and projects are easy to find. The models live together in `app/models.py` so the relationships stay visible. CLI commands registered with the app initialize, seed, and reset local data.
