@@ -66,6 +66,56 @@
     return objectUrl;
   }
 
+  function setThumb(selector, url) {
+    const visual = root.querySelector(selector);
+    if (!visual) {
+      return;
+    }
+    const image = visual.querySelector("img");
+    const placeholder = visual.querySelector("[data-selected-placeholder]");
+    if (url) {
+      if (image) {
+        image.src = url;
+        image.hidden = false;
+      }
+      if (placeholder) {
+        placeholder.hidden = true;
+      }
+    } else {
+      if (image) {
+        image.removeAttribute("src");
+        image.hidden = true;
+      }
+      if (placeholder) {
+        placeholder.hidden = false;
+      }
+    }
+  }
+
+  function updateSelectedFabrics() {
+    const section = root.querySelector("[data-selected-fabrics]");
+    if (!section) {
+      return;
+    }
+    const outerName = optionData("outer_fabric_id", "name");
+    const liningName = optionData("lining_fabric_id", "name");
+    const outerYards = optionData("outer_fabric_id", "yards");
+    const liningYards = optionData("lining_fabric_id", "yards");
+    section.hidden = !outerName && !liningName;
+    setHidden("[data-selected-outer]", !outerName);
+    setHidden("[data-selected-lining]", !liningName);
+    if (outerName) {
+      text("[data-selected-outer-name]", outerName);
+      text("[data-selected-outer-yards]", outerYards === "" ? "" : `${outerYards} yd on hand`);
+      setThumb("[data-selected-outer-visual]", optionData("outer_fabric_id", "image"));
+    }
+    if (liningName) {
+      text("[data-selected-lining-name]", liningName);
+      text("[data-selected-lining-yards]", liningYards === "" ? "" : `${liningYards} yd on hand`);
+      setThumb("[data-selected-lining-visual]", optionData("lining_fabric_id", "image"));
+    }
+  }
+
   function setVisual(url) {
     const visual = root.querySelector("[data-preview-visual]");
     if (!visual) {
@@ -129,6 +179,7 @@
       statusNode.className = statusClass(status);
     }
     setVisual(image);
+    updateSelectedFabrics();
 
     const patternSelected = Boolean(optionData("pattern_id", "name"));
     const yardage = root.querySelector("[data-preview-yardage]");

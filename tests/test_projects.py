@@ -142,6 +142,11 @@ def test_project_preview_shows_yardage_and_enough_answers(client):
     assert b"Pattern requires: 0.75 yards" in response.data
     assert b"Selected fabric available: 0.5 yards" in response.data
     assert b"Enough fabric: No" in response.data
+    assert b"Selected fabrics" in response.data
+    assert b"Plenty of Canvas" in response.data
+    assert b"2.5 yd on hand" in response.data
+    assert b"Short Lining" in response.data
+    assert b"0.5 yd on hand" in response.data
 
 
 def test_pattern_with_zero_lining_yards_still_requires_lining(client):

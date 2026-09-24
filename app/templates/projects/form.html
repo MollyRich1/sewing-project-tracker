@@ -115,6 +115,44 @@
         <p data-preview-pattern>{{ selected_pattern.name if selected_pattern else "Choose a pattern" }}</p>
         <p class="form-preview__fabric" data-preview-fabric>{{ selected_outer.name if selected_outer else "Choose outer fabric" }}</p>
         <p class="form-preview__fabric" data-preview-lining {% if not selected_lining %}hidden{% endif %}>{% if selected_lining %}Lining: {{ selected_lining.name }}{% endif %}</p>
+
+        <section class="selected-fabrics" data-selected-fabrics {% if not selected_outer and not selected_lining %}hidden{% endif %}>
+          <h3>Selected fabrics</h3>
+          <ul>
+            <li data-selected-outer {% if not selected_outer %}hidden{% endif %}>
+              <div class="selected-fabrics__thumb" data-selected-outer-visual>
+                {% if selected_outer and selected_outer.image_url and image_src(selected_outer.image_url) %}
+                  <img src="{{ image_src(selected_outer.image_url) }}" alt="">
+                  <span class="fabric-swatch fabric-swatch--sage" data-selected-placeholder hidden></span>
+                {% else %}
+                  <img alt="" hidden>
+                  <span class="fabric-swatch fabric-swatch--sage" data-selected-placeholder></span>
+                {% endif %}
+              </div>
+              <div class="selected-fabrics__copy">
+                <span class="selected-fabrics__role">Outer</span>
+                <strong data-selected-outer-name>{{ selected_outer.name if selected_outer else "" }}</strong>
+                <small data-selected-outer-yards>{% if selected_outer %}{{ selected_outer.yards_available }} yd on hand{% endif %}</small>
+              </div>
+            </li>
+            <li data-selected-lining {% if not selected_lining %}hidden{% endif %}>
+              <div class="selected-fabrics__thumb" data-selected-lining-visual>
+                {% if selected_lining and selected_lining.image_url and image_src(selected_lining.image_url) %}
+                  <img src="{{ image_src(selected_lining.image_url) }}" alt="">
+                  <span class="fabric-swatch fabric-swatch--blush" data-selected-placeholder hidden></span>
+                {% else %}
+                  <img alt="" hidden>
+                  <span class="fabric-swatch fabric-swatch--blush" data-selected-placeholder></span>
+                {% endif %}
+              </div>
+              <div class="selected-fabrics__copy">
+                <span class="selected-fabrics__role">Lining</span>
+                <strong data-selected-lining-name>{{ selected_lining.name if selected_lining else "" }}</strong>
+                <small data-selected-lining-yards>{% if selected_lining %}{{ selected_lining.yards_available }} yd on hand{% endif %}</small>
+              </div>
+            </li>
+          </ul>
+        </section>
       </div>
 
       <section class="form-preview__yardage" data-preview-yardage {% if not selected_pattern %}hidden{% endif %}>
