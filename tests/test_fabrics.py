@@ -13,6 +13,13 @@ def test_fabric_list_and_empty_state(client):
     assert b"2.5 yards available" in response.data
 
 
+def test_fabric_form_includes_stash_preview_panel(client):
+    response = client.get("/fabrics/new")
+    assert response.status_code == 200
+    assert b"Stash preview" in response.data
+    assert b'data-form-preview="fabric"' in response.data
+
+
 def test_create_fabric(client):
     response = client.post(
         "/fabrics/new",

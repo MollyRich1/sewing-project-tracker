@@ -18,87 +18,138 @@
 {% else %}
   {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
 
-  <form method="post" class="form-card" enctype="multipart/form-data">
-    <label>
-      Project name
-      <input type="text" name="name" value="{{ form.name }}" required>
-    </label>
-    <label>
-      Pattern
-      <select name="pattern_id" required>
-        <option value="">Choose a pattern</option>
-        {% for pattern in patterns %}
-          <option value="{{ pattern.id }}" {% if form.pattern_id|string == pattern.id|string %}selected{% endif %}>{{ pattern.name }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Outer fabric
-      <select name="outer_fabric_id" required>
-        <option value="">Choose outer fabric</option>
-        {% for fabric in fabrics %}
-          <option value="{{ fabric.id }}" {% if form.outer_fabric_id|string == fabric.id|string %}selected{% endif %}>{{ fabric.name }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Lining fabric (optional)
-      <select name="lining_fabric_id">
-        <option value="">No lining selected</option>
-        {% for fabric in fabrics %}
-          <option value="{{ fabric.id }}" {% if form.lining_fabric_id|string == fabric.id|string %}selected{% endif %}>{{ fabric.name }}</option>
-        {% endfor %}
-      </select>
-      <span class="hint">Outer and lining may use the same fabric.</span>
-    </label>
-    <label>
-      Status
-      <select name="status" required>
-        {% for status in statuses %}
-          <option value="{{ status }}" {% if form.status == status %}selected{% endif %}>{{ status }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Notes
-      <textarea name="notes" rows="4">{{ form.notes }}</textarea>
-    </label>
-    {{ image_upload_field(current_url=project.image_url if project is defined and project else none, label="Project photo") }}
-
-    <div class="form-actions">
-      <button id="preview" type="submit" formmethod="get" class="button secondary">Preview yardage</button>
-      <button type="submit" class="button">Save project</button>
-    </div>
-  </form>
-
-  {% if selected_pattern %}
-    <section class="yardage-comparison">
-      <h2>Pattern details</h2>
-      <p>Estimated time: {{ selected_pattern.estimated_hours }} hours</p>
-
-      <h3>Outer fabric</h3>
-      <p>Pattern requires: {{ selected_pattern.outer_yards_required }} yards</p>
-      {% if selected_outer %}
-        <p>Selected fabric available: {{ selected_outer.yards_available }} yards</p>
-        <p>Enough fabric: {{ "Yes" if outer_enough else "No" }}</p>
-      {% else %}
-        <p>Select an outer fabric to compare yardage.</p>
-      {% endif %}
-
-      {% if pattern_requires_lining %}
-        <h3>Lining fabric</h3>
-        <p>Pattern requires: {{ selected_pattern.lining_yards_required }} yards</p>
-        {% if selected_lining %}
-          <p>Selected fabric available: {{ selected_lining.yards_available }} yards</p>
-          <p>Enough fabric: {{ "Yes" if lining_enough else "No" }}</p>
-        {% else %}
-          <p class="notice">Lining is still needed.</p>
-        {% endif %}
-      {% else %}
-        <p>This pattern does not require lining.</p>
-      {% endif %}
-      <p class="hint">This comparison is informational. Saving a project never changes fabric inventory.</p>
-    </section>
+  {% set preview_ns = namespace(image="") %}
+  {% if project is defined and project and project.image_url %}
+    {% set preview_ns.image = image_src(project.image_url) %}
+  {% elif selected_pattern and selected_pattern.image_url %}
+    {% set preview_ns.image = image_src(selected_pattern.image_url) %}
+  {% elif selected_outer and selected_outer.image_url %}
+    {% set preview_ns.image = image_src(selected_outer.image_url) %}
   {% endif %}
+
+  <div class="form-split" data-form-preview="project" data-current-image="{{ preview_ns.image }}">
+    <form method="post" class="form-card" enctype="multipart/form-data">
+      <label>
+        Project name
+        <input type="text" name="name" value="{{ form.name }}" required>
+      </label>
+      <label>
+        Pattern
+        <select name="pattern_id" required>
+          <option value="">Choose a pattern</option>
+          {% for pattern in patterns %}
+            <option
+              value="{{ pattern.id }}"
+              data-name="{{ pattern.name }}"
+              data-hours="{{ pattern.estimated_hours }}"
+              data-outer-yards="{{ pattern.outer_yards_required }}"
+              data-lining-yards="{{ '' if pattern.lining_yards_required is none else pattern.lining_yards_required }}"
+              data-image="{{ image_src(pattern.image_url) if pattern.image_url else '' }}"
+              {% if form.pattern_id|string == pattern.id|string %}selected{% endif %}
+            >{{ pattern.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Outer fabric
+        <select name="outer_fabric_id" required>
+          <option value="">Choose outer fabric</option>
+          {% for fabric in fabrics %}
+            <option
+              value="{{ fabric.id }}"
+              data-name="{{ fabric.name }}"
+              data-yards="{{ fabric.yards_available }}"
+              data-image="{{ image_src(fabric.image_url) if fabric.image_url else '' }}"
+              {% if form.outer_fabric_id|string == fabric.id|string %}selected{% endif %}
+            >{{ fabric.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Lining fabric (optional)
+        <select name="lining_fabric_id">
+          <option value="">No lining selected</option>
+          {% for fabric in fabrics %}
+            <option
+              value="{{ fabric.id }}"
+              data-name="{{ fabric.name }}"
+              data-yards="{{ fabric.yards_available }}"
+              data-image="{{ image_src(fabric.image_url) if fabric.image_url else '' }}"
+              {% if form.lining_fabric_id|string == fabric.id|string %}selected{% endif %}
+            >{{ fabric.name }}</option>
+          {% endfor %}
+        </select>
+        <span class="hint">Outer and lining may use the same fabric.</span>
+      </label>
+      <label>
+        Status
+        <select name="status" required>
+          {% for status in statuses %}
+            <option value="{{ status }}" {% if form.status == status %}selected{% endif %}>{{ status }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Notes
+        <textarea name="notes" rows="4">{{ form.notes }}</textarea>
+      </label>
+      {{ image_upload_field(current_url=project.image_url if project is defined and project else none, label="Project photo") }}
+      <button type="submit" class="button">Save project</button>
+    </form>
+
+    <aside class="form-preview" aria-label="Project preview">
+      <p class="card-kicker">Preview</p>
+      <h2>Project preview</h2>
+      <div class="form-preview__card">
+        <div class="form-preview__visual" data-preview-visual>
+          {% if preview_ns.image %}
+            <img src="{{ preview_ns.image }}" alt="">
+            <span class="media-placeholder media-placeholder--project" data-preview-placeholder hidden></span>
+          {% else %}
+            <img alt="" hidden>
+            <span class="media-placeholder media-placeholder--project" data-preview-placeholder></span>
+          {% endif %}
+        </div>
+        <span class="status-label status-label--{{ (form.status or 'In Progress')|lower|replace(' ', '-') }}" data-preview-status>{{ form.status or "In Progress" }}</span>
+        <h3 data-preview-name>{{ form.name or "Untitled project" }}</h3>
+        <p data-preview-pattern>{{ selected_pattern.name if selected_pattern else "Choose a pattern" }}</p>
+        <p class="form-preview__fabric" data-preview-fabric>{{ selected_outer.name if selected_outer else "Choose outer fabric" }}</p>
+        <p class="form-preview__fabric" data-preview-lining {% if not selected_lining %}hidden{% endif %}>{% if selected_lining %}Lining: {{ selected_lining.name }}{% endif %}</p>
+      </div>
+
+      <section class="form-preview__yardage" data-preview-yardage {% if not selected_pattern %}hidden{% endif %}>
+        <h3>Pattern details</h3>
+        <p data-yardage-hours>{% if selected_pattern %}Estimated time: {{ selected_pattern.estimated_hours }} hours{% endif %}</p>
+
+        <h4>Outer fabric</h4>
+        <p data-yardage-outer-required>{% if selected_pattern %}Pattern requires: {{ selected_pattern.outer_yards_required }} yards{% endif %}</p>
+        <div data-yardage-outer-details {% if not selected_outer %}hidden{% endif %}>
+          <p data-yardage-outer-available>{% if selected_outer %}Selected fabric available: {{ selected_outer.yards_available }} yards{% endif %}</p>
+          <p data-yardage-outer-enough>{% if selected_outer %}Enough fabric: {{ "Yes" if outer_enough else "No" }}{% endif %}</p>
+        </div>
+        <p data-yardage-outer-missing {% if selected_outer %}hidden{% endif %}>Select an outer fabric to compare yardage.</p>
+
+        <div data-yardage-lining {% if not pattern_requires_lining %}hidden{% endif %}>
+          <h4>Lining fabric</h4>
+          <p data-yardage-lining-required>{% if selected_pattern and pattern_requires_lining %}Pattern requires: {{ selected_pattern.lining_yards_required }} yards{% endif %}</p>
+          <div data-yardage-lining-details {% if not selected_lining %}hidden{% endif %}>
+            <p data-yardage-lining-available>{% if selected_lining %}Selected fabric available: {{ selected_lining.yards_available }} yards{% endif %}</p>
+            <p data-yardage-lining-enough>{% if selected_lining %}Enough fabric: {{ "Yes" if lining_enough else "No" }}{% endif %}</p>
+          </div>
+          {% if selected_pattern and pattern_requires_lining and not selected_lining %}
+            <p class="notice" data-yardage-lining-needed>Lining is still needed.</p>
+          {% else %}
+            <p class="notice" data-yardage-lining-needed hidden></p>
+          {% endif %}
+        </div>
+        {% if selected_pattern and not pattern_requires_lining %}
+          <p data-yardage-no-lining>This pattern does not require lining.</p>
+        {% else %}
+          <p data-yardage-no-lining hidden></p>
+        {% endif %}
+        <p class="hint">This comparison is informational. Saving a project never changes fabric inventory.</p>
+      </section>
+    </aside>
+  </div>
 {% endif %}
 {% endblock %}

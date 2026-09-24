@@ -13,33 +13,71 @@
   <p class="form-error">{{ error }}</p>
 {% endif %}
 
-<form method="post" class="form-card" enctype="multipart/form-data">
-  <label>
-    Name
-    <input type="text" name="name" value="{{ form.name }}" required>
-  </label>
-  <label>
-    Estimated hours
-    <input type="number" name="estimated_hours" value="{{ form.estimated_hours }}" min="0" step="0.25" required>
-  </label>
-  <label>
-    Outer yards required
-    <input type="number" name="outer_yards_required" value="{{ form.outer_yards_required }}" min="0" step="0.25" required>
-  </label>
-  <label>
-    Lining yards required
-    <input type="number" name="lining_yards_required" value="{{ form.lining_yards_required }}" min="0" step="0.25">
-    <span class="hint">Leave blank if this pattern does not use lining.</span>
-  </label>
-  <label>
-    Notions
-    <textarea name="notions" rows="3">{{ form.notions }}</textarea>
-  </label>
-  <label>
-    Notes
-    <textarea name="notes" rows="4">{{ form.notes }}</textarea>
-  </label>
-  {{ image_upload_field(current_url=pattern.image_url if pattern is defined else none, label="Pattern photo") }}
-  <button type="submit" class="button">Save pattern</button>
-</form>
+{% set current_image = image_src(pattern.image_url) if pattern is defined and pattern.image_url else "" %}
+<div class="form-split" data-form-preview="pattern" data-current-image="{{ current_image }}">
+  <form method="post" class="form-card" enctype="multipart/form-data">
+    <label>
+      Name
+      <input type="text" name="name" value="{{ form.name }}" required>
+    </label>
+    <label>
+      Estimated hours
+      <input type="number" name="estimated_hours" value="{{ form.estimated_hours }}" min="0" step="0.25" required>
+    </label>
+    <label>
+      Outer yards required
+      <input type="number" name="outer_yards_required" value="{{ form.outer_yards_required }}" min="0" step="0.25" required>
+    </label>
+    <label>
+      Lining yards required
+      <input type="number" name="lining_yards_required" value="{{ form.lining_yards_required }}" min="0" step="0.25">
+      <span class="hint">Leave blank if this pattern does not use lining.</span>
+    </label>
+    <label>
+      Notions
+      <textarea name="notions" rows="3">{{ form.notions }}</textarea>
+    </label>
+    <label>
+      Notes
+      <textarea name="notes" rows="4">{{ form.notes }}</textarea>
+    </label>
+    {{ image_upload_field(current_url=pattern.image_url if pattern is defined else none, label="Pattern photo") }}
+    <button type="submit" class="button">Save pattern</button>
+  </form>
+
+  <aside class="form-preview" aria-label="Pattern preview">
+    <p class="card-kicker">Preview</p>
+    <h2>Pattern preview</h2>
+    <div class="form-preview__card">
+      <div class="form-preview__visual" data-preview-visual>
+        {% if current_image %}
+          <img src="{{ current_image }}" alt="">
+          <span class="media-placeholder media-placeholder--pattern" data-preview-placeholder hidden></span>
+        {% else %}
+          <img alt="" hidden>
+          <span class="media-placeholder media-placeholder--pattern" data-preview-placeholder></span>
+        {% endif %}
+      </div>
+      <h3 data-preview-name>{{ form.name or "Untitled pattern" }}</h3>
+      <p data-preview-meta>
+        {% if form.estimated_hours and form.outer_yards_required %}
+          {{ form.estimated_hours }} hr · {{ form.outer_yards_required }} yd outer
+        {% elif form.estimated_hours %}
+          {{ form.estimated_hours }} hr
+        {% elif form.outer_yards_required %}
+          {{ form.outer_yards_required }} yd outer
+        {% else %}
+          Add time and yardage
+        {% endif %}
+      </p>
+      <p data-preview-lining>
+        {% if form.lining_yards_required == "" or form.lining_yards_required is none %}
+          Does not require lining
+        {% else %}
+          Lining fabric: {{ form.lining_yards_required }} yards
+        {% endif %}
+      </p>
+    </div>
+  </aside>
+</div>
 {% endblock %}

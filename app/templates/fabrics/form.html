@@ -11,24 +11,48 @@
 
 {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
 
-<form method="post" class="form-card" enctype="multipart/form-data">
-  <label>
-    Name
-    <input type="text" name="name" value="{{ form.name }}" required>
-  </label>
-  <label>
-    Yards available
-    <input type="number" name="yards_available" value="{{ form.yards_available }}" min="0" step="0.25" required>
-  </label>
-  <label>
-    Color or description
-    <textarea name="description" rows="3">{{ form.description }}</textarea>
-  </label>
-  <label>
-    Notes
-    <textarea name="notes" rows="3">{{ form.notes }}</textarea>
-  </label>
-  {{ image_upload_field(current_url=fabric.image_url if fabric is defined else none, label="Fabric photo") }}
-  <button type="submit" class="button">Save fabric</button>
-</form>
+{% set current_image = image_src(fabric.image_url) if fabric is defined and fabric.image_url else "" %}
+<div class="form-split" data-form-preview="fabric" data-current-image="{{ current_image }}">
+  <form method="post" class="form-card" enctype="multipart/form-data">
+    <label>
+      Name
+      <input type="text" name="name" value="{{ form.name }}" required>
+    </label>
+    <label>
+      Yards available
+      <input type="number" name="yards_available" value="{{ form.yards_available }}" min="0" step="0.25" required>
+    </label>
+    <label>
+      Color or description
+      <textarea name="description" rows="3">{{ form.description }}</textarea>
+    </label>
+    <label>
+      Notes
+      <textarea name="notes" rows="3">{{ form.notes }}</textarea>
+    </label>
+    {{ image_upload_field(current_url=fabric.image_url if fabric is defined else none, label="Fabric photo") }}
+    <button type="submit" class="button">Save fabric</button>
+  </form>
+
+  <aside class="form-preview" aria-label="Stash preview">
+    <p class="card-kicker">Library</p>
+    <h2>Stash preview</h2>
+    <div class="form-preview__card">
+      <div class="form-preview__visual form-preview__visual--stash" data-preview-visual>
+        {% if current_image %}
+          <img src="{{ current_image }}" alt="">
+          <span class="fabric-swatch fabric-swatch--sage" data-preview-placeholder hidden></span>
+        {% else %}
+          <img alt="" hidden>
+          <span class="fabric-swatch fabric-swatch--sage" data-preview-placeholder></span>
+        {% endif %}
+      </div>
+      <h3 data-preview-name>{{ form.name or "New fabric" }}</h3>
+      <p data-preview-yards>
+        {% if form.yards_available != "" %}{{ form.yards_available }} yd available{% else %}Add yardage{% endif %}
+      </p>
+      <p data-preview-description {% if not form.description %}hidden{% endif %}>{{ form.description }}</p>
+    </div>
+  </aside>
+</div>
 {% endblock %}

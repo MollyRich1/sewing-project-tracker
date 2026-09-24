@@ -31,7 +31,7 @@ Optional photos can be attached to a pattern, pattern piece, fabric, or project.
 - **Fabrics.** Keep a stash list with yards on hand, a description, and notes.
 - **Projects.** Create a named project from one pattern, one outer fabric, and an optional lining fabric. Add notes and a status.
 - **Status.** Move a project among Planned, In Progress, and Completed. The project list opens on In Progress and can be filtered by status.
-- **Yardage check.** Compare the yards a pattern needs with the yards available on the fabric you selected. You can preview that comparison before saving.
+- **Yardage check.** Compare the yards a pattern needs with the yards available on the fabric you selected. The Project Preview panel shows that comparison before you save.
 - **Photos.** Add an optional photo when you create or edit a pattern, piece, fabric, or project.
 
 ## Tech stack
@@ -121,12 +121,12 @@ A project needs at least one pattern and one fabric. The dashboard says so when 
 
 Photos are optional on each of these forms.
 
-### Create a project and preview yardage
+### Create a project
 
 1. Choose **+ New Project**.
 2. Enter a project name.
 3. Choose a pattern, an outer fabric, and a lining fabric if you want one.
-4. Choose **Preview yardage**. The page shows the pattern's estimated time and whether the selected fabric covers the required yards. Nothing is saved yet.
+4. Watch the **Project Preview** panel. It updates with the estimated time, required yardage, available fabric, and whether there is enough fabric. Nothing is saved yet.
 5. Choose **Save project** when the plan looks right. The project page shows the same comparison, plus the pieces to cut.
 
 > **TODO: Record the project-creation and yardage-preview demo.**
@@ -137,18 +137,20 @@ Photos are optional on each of these forms.
 >
 > Prefer a short MP4. Use an optimized GIF with the same basename if you need the motion to render inline from the repository. Keep it silent and under 20 seconds. About **12–15 seconds** is enough.
 >
-> Why motion helps: the yardage panel appears only after a pattern and fabric are selected, and the enough-fabric answer changes when the fabric changes.
+> Why motion helps: the Project Preview panel updates as the pattern and fabric change, including the enough-fabric answer.
 >
 > Record this sequence, using the seeded data:
 >
-> 1. Start on **+ New Project** with the form already in view. Pause briefly.
+> 1. Start on **+ New Project** with the form and the right-side Project Preview both visible. Pause briefly.
 > 2. Type a short name, such as `Apron test`.
 > 3. Choose the pattern **Cross-back Apron** (2 yards outer, no lining).
 > 4. Choose the outer fabric **Blue Floral Cotton** (1.25 yards on hand).
-> 5. Click **Preview yardage** and pause on **Enough fabric: No**.
-> 6. If time remains, change the outer fabric to **Natural Cotton Canvas** (2.5 yards), click **Preview yardage** again, and pause on **Yes**.
+> 5. Pause while the side panel shows the pattern details and **Enough fabric: No**.
+> 6. If time remains, change the outer fabric to **Natural Cotton Canvas** (2.5 yards) and pause while the preview updates to **Yes**.
 >
-> Crop to the form and the yardage panel beneath it. Hide the rest of the desktop. Zoom enough that the pattern name, fabric name, and Yes/No line are readable at README width. Scroll the comparison into view before the final pause. Use slow cursor movement, and hold still for about a second at the start and end.
+> Do not click a Preview yardage button. That control is no longer on the page. Saving is optional for this clip.
+>
+> Crop so the form and the Project Preview panel are readable together. Hide the rest of the desktop. Zoom enough that the pattern name, fabric name, and Yes/No line are readable at README width. Use slow cursor movement, and hold still for about a second at the start and end.
 >
 > After the file exists and you have confirmed that it plays on the rendered README, replace this note with one of:
 >

@@ -27,6 +27,18 @@ def test_new_project_empty_state_links_to_missing_dependencies(client):
     assert b"Add fabric" in response.data
 
 
+def test_create_project_form_includes_preview_panel(client):
+    pattern = make_pattern()
+    make_fabric()
+    response = client.get("/projects/new")
+    assert response.status_code == 200
+    assert b"Project preview" in response.data
+    assert b'data-form-preview="project"' in response.data
+    assert b"Preview yardage" not in response.data
+    assert b"Save project" in response.data
+    assert pattern.name.encode() in response.data
+
+
 def test_create_project_with_required_outer_and_optional_lining(client):
     pattern = make_pattern()
     outer = make_fabric(name="Outer")

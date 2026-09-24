@@ -15,6 +15,13 @@ def test_pattern_list_and_empty_state(client):
     assert b"Lining fabric: 0.5 yards" in response.data
 
 
+def test_pattern_form_includes_preview_panel(client):
+    response = client.get("/patterns/new")
+    assert response.status_code == 200
+    assert b"Pattern preview" in response.data
+    assert b'data-form-preview="pattern"' in response.data
+
+
 def test_pattern_list_shows_no_lining_when_yards_are_none(client):
     make_pattern(name="Scrunchie", lining_yards_required=None)
     response = client.get("/patterns/")
